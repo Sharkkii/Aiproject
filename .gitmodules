@@ -1,0 +1,3 @@
+[submodule "src/project/backend/lib/shaRL"]
+	path = src/project/backend/lib/shaRL
+	url = git@github.com:Sharkkii/shaRL.git
