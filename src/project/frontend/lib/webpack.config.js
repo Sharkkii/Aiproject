@@ -10,11 +10,11 @@ module.exports = {
   },
   output: {
     // NOTE: for client-side
-    path: path.resolve(__dirname, "./public/"),
-    filename: "bundle.js"
+    // path: path.resolve(__dirname, "./public/"),
+    // filename: "bundle.js"
     // NOTE: for server-side
-    // path: path.resolve(__dirname, "./public/webpack_bundles/"),
-    // filename: "[name]-[hash].js",
+    path: path.resolve(__dirname, "./public/webpack_bundles/"),
+    filename: "[name]-[hash].js",
   },
   devServer: {
     contentBase: path.join(__dirname, "./public"),
