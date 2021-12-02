@@ -3,7 +3,7 @@ import VIndexPage from "../components/pages/VIndexPage.vue"
 
 const routes = [
   {
-    path: "*",
+    path: "",
     component: VIndexPage
   }
 ]

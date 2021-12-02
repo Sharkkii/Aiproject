@@ -13,5 +13,6 @@ const app = new Vue({
     App
   },
   template: "<App/>",
-  css
+  css,
+  delimiters: ["[[", "]]"]
 })
