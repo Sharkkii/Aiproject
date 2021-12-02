@@ -30,6 +30,7 @@
 </style>
 
 <script>
+const axios = require("axios")
 import VControlPanel from "./VControlPanel.vue"
 import VViewMonitor from "./VViewMonitor.vue"
 export default {
@@ -41,6 +42,19 @@ export default {
     return {
       taskList: []
     }
+  },
+  methods: {
+    getTaskList: function() {
+      let self = this
+      axios
+      .get("get-task-list")
+      .then(function(response) {
+        self.taskList = response.data
+      })
+    }
+  },
+  mounted: function() {
+    this.getTaskList()
   }
 }
 </script>
