@@ -57,8 +57,15 @@ export default {
     }
   },
   methods: {
+    createTask: function(data) {
+      this.$emit("create-task", data)
+    },
     submit: function() {
-
+      this.createTask({
+        task_name: this.taskName,
+        due: this.due,
+        required_effort: this.requiredEffort
+      })
     }
   }
 }

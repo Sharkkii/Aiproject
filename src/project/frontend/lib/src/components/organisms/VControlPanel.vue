@@ -3,7 +3,7 @@
   <div class="sub-header">
     <p>Control Panel</p>
   </div>
-  <v-task-create-button class="task-create-button"></v-task-create-button>
+  <v-task-create-button v-on:create-task="createTask"></v-task-create-button>
 </div>
 </template>
 
@@ -26,6 +26,11 @@
 import VTaskCreateButton from "../molecules/VTaskCreateButton.vue"
 export default {
   name: "VControlPanel",
+  methods: {
+    createTask: function(data) {
+      this.$emit("create-task", data)
+    }
+  },
   components: {
     VTaskCreateButton
   }

@@ -2,7 +2,7 @@
 <div>
   <div id="v-dashboard">
     <div class="v-control-panel">
-      <v-control-panel></v-control-panel>
+      <v-control-panel v-on:create-task="createTask"></v-control-panel>
     </div>
     <div class="v-view-monitor">
       <v-view-monitor v-bind:task-list="taskList"></v-view-monitor>
@@ -50,6 +50,16 @@ export default {
       .get("get-task-list")
       .then(function(response) {
         self.taskList = response.data
+      })
+    },
+    createTask: function(data) {
+      let self = this
+      axios.defaults.xsrfCookieName = "csrftoken"
+      axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
+      axios
+      .post("create-task", data)
+      .then(function(response) {
+        self.getTaskList()
       })
     }
   },
