@@ -1,26 +1,26 @@
 <template>
 <div id="v-task-create-button">
-  <form>
+  <form method="POST" v-on:submit.prevent="submit">
     <div class="item">
       <label>
         <p>Task Name</p>
-        <div><input type="text" name="task-name"></div>
+        <div><input type="text" v-model="taskName"></div>
       </label>
     </div>
     <div class="item">
       <label>
-        <p>Duration</p>
-        <div><input type="number" name="task-duration"></div>
+        <p>Required Effort</p>
+        <div><input type="number" v-model="requiredEffort"></div>
       </label>
     </div>
     <div class="item">
       <label>
-        <p>Deadline</p>
-        <div><input type="number" name="task-deadline"></div>
+        <p>Due</p>
+        <div><input type="date" v-model="due"></div>
       </label>
     </div>
     <div class="item">
-      <button>
+      <button type="submit">
         <p>Create</p>
       </button>
     </div>
@@ -48,6 +48,18 @@
 
 <script>
 export default {
-  name: "VTaskCreateButton"
+  name: "VTaskCreateButton",
+  data: function() {
+    return {
+      taskName: null,
+      requiredEffort: null,
+      due: null
+    }
+  },
+  methods: {
+    submit: function() {
+
+    }
+  }
 }
 </script>
