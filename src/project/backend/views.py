@@ -5,8 +5,13 @@ from rest_framework.response import Response
 from .models import TaskModel
 from .serializers import TaskListSerializer
 from django.http import JsonResponse
+from .src.scheduler import JobScheduler
 
 # Create your views here.
+
+scheduler = JobScheduler(
+    n_slot = 3
+)
 
 @api_view(["GET"])
 def getTaskList(request):
@@ -32,4 +37,14 @@ def createTask(request):
         required_effort = required_effort
     )
     response = Response()
+    return response
+
+@api_view(["POST"])
+def scheduleJob(request):
+
+    n_step = int(request.data["n_step"])
+    data = scheduler.schedule_job(
+        n_step = n_step
+    )
+    response = JsonResponse(data)
     return response
