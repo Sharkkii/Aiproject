@@ -3,6 +3,8 @@
   <div class="sub-header">
     <p>Schedule Panel</p>
   </div>
+  <v-job-schedule-button v-on:schedule-job="scheduleJob">
+  </v-job-schedule-button>
 </div>
 </template>
 
@@ -22,7 +24,16 @@
 </style>
 
 <script>
+import VJobScheduleButton from "../molecules/VScheduleButton.vue"
 export default {
-  name: "VSchedulePanel"
+  name: "VSchedulePanel",
+  components: {
+    VJobScheduleButton
+  },
+  methods: {
+    scheduleJob: function(data) {
+      this.$emit("schedule-job", data)
+    }
+  }
 }
 </script>
