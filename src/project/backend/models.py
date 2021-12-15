@@ -4,14 +4,14 @@ from django.utils import timezone
 
 # Create your models here.
 class TaskModel(models.Model):
-    name = models.CharField(max_length = 20)
+    name = models.CharField(max_length = 20, primary_key = True)
     required_effort = models.FloatField()
     remaining_time = models.FloatField()
     created_at = models.DateField(default=timezone.now)
     overdue_at = models.DateField()
 
 class ReferenceTaskModel(models.Model):
-    name = models.CharField(max_length = 20)
+    name = models.CharField(max_length = 20, primary_key = True)
     required_effort = models.FloatField()
     remaining_time = models.FloatField()
     created_at = models.DateField(default=timezone.now)
