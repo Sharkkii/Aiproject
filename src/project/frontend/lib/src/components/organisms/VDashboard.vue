@@ -1,11 +1,22 @@
 <template>
 <div>
   <div id="v-dashboard">
-    <div class="v-control-panel">
-      <v-control-panel v-on:create-task="createTask"></v-control-panel>
+    <div class="float-left">
+      <div class="v-control-panel">
+        <v-control-panel v-on:create-task="createTask"></v-control-panel>
+      </div>
+      <div class="v-schedule-panel">
+        <v-schedule-panel v-on:schedule-job="scheduleJob">
+        </v-schedule-panel>
+      </div>
     </div>
-    <div class="v-view-monitor">
-      <v-view-monitor v-bind:task-list="taskList"></v-view-monitor>
+    <div class="float-left">
+      <div class="v-view-monitor">
+        <v-view-monitor v-bind:task-list="taskList"></v-view-monitor>
+      </div>
+      <div class="v-schedule-monitor">
+        <v-schedule-monitor v-bind:schedule-list="scheduleList"></v-schedule-monitor>
+      </div>
     </div>
   </div>
 </div>
@@ -19,28 +30,43 @@
 }
 
 .v-control-panel {
-  float: left;
-  margin: 0 10px;
+  margin: 10px;
 }
 
 .v-view-monitor {
+  margin: 10px;
+}
+
+.v-schedule-panel {
+  margin: 10px;
+}
+
+.v-schedule-monitor {
+  margin: 10px;
+}
+
+.float-left {
   float: left;
-  margin: 0 10px;
 }
 </style>
 
 <script>
+import VScheduleButton from '../molecules/VScheduleButton.vue'
 const axios = require("axios")
 import VControlPanel from "./VControlPanel.vue"
 import VViewMonitor from "./VViewMonitor.vue"
+import VSchedulePanel from './VSchedulePanel.vue'
+import VScheduleMonitor from './VScheduleMonitor.vue'
 export default {
   name: "VDashboard",
   components: {
-    VControlPanel, VViewMonitor
+    VControlPanel, VViewMonitor, VSchedulePanel, VScheduleMonitor,
+    VScheduleButton
   },
   data: function() {
     return {
-      taskList: []
+      taskList: [],
+      scheduleList: {}
     }
   },
   methods: {
@@ -60,6 +86,16 @@ export default {
       .post("create-task", data)
       .then(function(response) {
         self.getTaskList()
+      })
+    },
+    scheduleJob: function(data) {
+      let self = this
+      axios.defaults.xsrfCookieName = "csrftoken"
+      axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
+      axios
+      .post("schedule-job", data)
+      .then(function(response) {
+        self.scheduleList = response.data
       })
     }
   },
