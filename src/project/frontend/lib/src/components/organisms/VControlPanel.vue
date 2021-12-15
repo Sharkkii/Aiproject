@@ -3,7 +3,8 @@
   <div class="sub-header">
     <p>Control Panel</p>
   </div>
-  <v-task-create-button v-on:create-task="createTask"></v-task-create-button>
+  <v-reference-task-list v-bind:reference-task-list="referenceTaskList">
+  </v-reference-task-list>
 </div>
 </template>
 
@@ -23,16 +24,22 @@
 </style>
 
 <script>
-import VTaskCreateButton from "../molecules/VTaskCreateButton.vue"
+import VReferenceTaskList from '../molecules/VReferenceTaskList.vue'
 export default {
   name: "VControlPanel",
+  props: {
+    referenceTaskList: {
+      type: Array,
+      default: []
+    }
+  },
   methods: {
     createTask: function(data) {
       this.$emit("create-task", data)
     }
   },
   components: {
-    VTaskCreateButton
+    VReferenceTaskList
   }
 }
 </script>
