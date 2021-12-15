@@ -2,8 +2,8 @@ import datetime
 from django.utils import timezone
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .models import TaskModel
-from .serializers import TaskListSerializer
+from .models import TaskModel, ReferenceTaskModel
+from .serializers import TaskListSerializer, ReferenceTaskListSerializer
 from django.http import JsonResponse
 from .src.scheduler import JobScheduler
 
@@ -18,6 +18,14 @@ def getTaskList(request):
     
     data = TaskModel.objects.all()
     serializer = TaskListSerializer(data, many=True)
+    response = Response(serializer.data)
+    return response
+
+@api_view(["GET"])
+def getReferenceTaskList(request):
+
+    data = ReferenceTaskModel.objects.all()
+    serializer = ReferenceTaskListSerializer(data, many=True)
     response = Response(serializer.data)
     return response
 

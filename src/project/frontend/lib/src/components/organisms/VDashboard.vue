@@ -3,7 +3,7 @@
   <div id="v-dashboard">
     <div class="float-left">
       <div class="v-control-panel">
-        <v-control-panel v-on:create-task="createTask"></v-control-panel>
+        <v-control-panel v-on:create-task="createTask" v-bind:reference-task-list="referenceTaskList"></v-control-panel>
       </div>
       <div class="v-schedule-panel">
         <v-schedule-panel v-on:schedule-job="scheduleJob">
@@ -66,6 +66,7 @@ export default {
   data: function() {
     return {
       taskList: [],
+      referenceTaskList: [],
       scheduleList: {}
     }
   },
@@ -76,6 +77,14 @@ export default {
       .get("get-task-list")
       .then(function(response) {
         self.taskList = response.data
+      })
+    },
+    getReferenceTaskList: function() {
+      let self = this
+      axios
+      .get("get-reference-task-list")
+      .then(function(response) {
+        self.referenceTaskList = response.data
       })
     },
     createTask: function(data) {
@@ -101,6 +110,7 @@ export default {
   },
   mounted: function() {
     this.getTaskList()
+    this.getReferenceTaskList()
   }
 }
 </script>
