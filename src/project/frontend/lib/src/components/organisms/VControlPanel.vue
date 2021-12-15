@@ -3,7 +3,7 @@
   <div class="sub-header">
     <p>Control Panel</p>
   </div>
-  <v-reference-task-list v-bind:reference-task-list="referenceTaskList">
+  <v-reference-task-list v-bind:reference-task-list="referenceTaskList" v-on:create-task="createTask">
   </v-reference-task-list>
 </div>
 </template>
