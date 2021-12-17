@@ -64,6 +64,15 @@ def createTask(request):
     return response
 
 @api_view(["POST"])
+def deleteTask(request):
+
+    name = request.data["name"]
+    task = TaskModel.objects.get(pk=name)
+    task.delete()
+    response = Response()
+    return response
+
+@api_view(["POST"])
 def scheduleJob(request):
 
     n_step = int(request.data["n_step"])

@@ -1,25 +1,27 @@
 <template>
 <div id="v-task-list">
-  <table>
-      <thead>
-        <tr>
-          <th>Task Name</th>
-          <th>Required Effort</th>
-          <th>Remaining Time</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="task in taskList" v-bind:key="task.id">
-          <td>{{ task.name }}</td>
-          <td>{{ task.required_effort }}</td>
-          <td>{{ task.remaining_time }}</td>
-          <td>
-            <button>Delete</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <form method="POST" v-on:submit.prevent="nop">
+    <table>
+        <thead>
+          <tr>
+            <th>Task Name</th>
+            <th>Required Effort</th>
+            <th>Remaining Time</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="task in taskList" v-bind:key="task.id">
+            <td>{{ task.name }}</td>
+            <td>{{ task.required_effort }}</td>
+            <td>{{ task.remaining_time }}</td>
+            <td>
+              <button type="submit" v-bind:name="task.name" v-bind:value="task.name" v-on:click="submit">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </form>
 </div>
 </template>
 
@@ -41,6 +43,15 @@ export default {
     taskList: {
       type: Array,
       default: []
+    }
+  },
+  methods: {
+    nop: function() {},
+    submit: function(event) {
+      let name = event.target.name
+      this.$emit("delete-task", {
+        name: name
+      })
     }
   }
 }

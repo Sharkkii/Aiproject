@@ -12,7 +12,7 @@
     </div>
     <div class="float-left">
       <div class="v-task-monitor">
-        <v-task-monitor v-bind:task-list="taskList"></v-task-monitor>
+        <v-task-monitor v-bind:task-list="taskList" v-on:delete-task="deleteTask"></v-task-monitor>
       </div>
       <div class="v-schedule-monitor">
         <v-schedule-monitor v-bind:schedule-list="scheduleList"></v-schedule-monitor>
@@ -105,6 +105,16 @@ export default {
       .post("create-reference-task", data)
       .then(function(response) {
         self.getReferenceTaskList()
+      })
+    },
+    deleteTask: function(data) {
+      let self = this
+      axios.defaults.xsrfCookieName = "csrftoken"
+      axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
+      axios
+      .post("delete-task", data)
+      .then(function(response) {
+        self.getTaskList()
       })
     },
     scheduleJob: function(data) {

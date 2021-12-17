@@ -4,7 +4,7 @@
     <p>Task Monitor</p>
   </div>
   <div class="task-list">
-    <v-task-list v-bind:task-list="taskList">
+    <v-task-list v-bind:task-list="taskList" v-on:delete-task="deleteTask">
     </v-task-list>
   </div>
 </div>
@@ -37,6 +37,11 @@ export default {
     taskList: {
       type: Array,
       default: []
+    }
+  },
+  methods: {
+    deleteTask: function(data) {
+      this.$emit("delete-task", data)
     }
   }
 }
