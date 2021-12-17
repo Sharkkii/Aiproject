@@ -3,7 +3,7 @@
   <div id="v-dashboard">
     <div class="float-left">
       <div class="v-control-panel">
-        <v-control-panel v-on:create-task="createTask" v-bind:reference-task-list="referenceTaskList"></v-control-panel>
+        <v-control-panel v-on:create-task="createTask"  v-on:create-reference-task="createReferenceTask" v-bind:reference-task-list="referenceTaskList"></v-control-panel>
       </div>
       <div class="v-schedule-panel">
         <v-schedule-panel v-on:schedule-job="scheduleJob">
@@ -95,6 +95,16 @@ export default {
       .post("create-task", data)
       .then(function(response) {
         self.getTaskList()
+      })
+    },
+    createReferenceTask: function(data) {
+      let self = this
+      axios.defaults.xsrfCookieName = "csrftoken"
+      axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
+      axios
+      .post("create-reference-task", data)
+      .then(function(response) {
+        self.getReferenceTaskList()
       })
     },
     scheduleJob: function(data) {

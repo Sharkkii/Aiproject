@@ -5,6 +5,8 @@
   </div>
   <v-reference-task-list v-bind:reference-task-list="referenceTaskList" v-on:create-task="createTask">
   </v-reference-task-list>
+  <v-reference-task-create-button v-on:create-reference-task="createReferenceTask">
+  </v-reference-task-create-button>
 </div>
 </template>
 
@@ -25,6 +27,7 @@
 
 <script>
 import VReferenceTaskList from '../molecules/VReferenceTaskList.vue'
+import VReferenceTaskCreateButton from '../molecules/VReferenceTaskCreateButton.vue'
 export default {
   name: "VControlPanel",
   props: {
@@ -36,10 +39,13 @@ export default {
   methods: {
     createTask: function(data) {
       this.$emit("create-task", data)
+    },
+    createReferenceTask: function(data) {
+      this.$emit("create-reference-task", data)
     }
   },
   components: {
-    VReferenceTaskList
+    VReferenceTaskList, VReferenceTaskCreateButton
   }
 }
 </script>

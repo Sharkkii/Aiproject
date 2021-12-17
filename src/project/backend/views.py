@@ -29,23 +29,23 @@ def getReferenceTaskList(request):
     response = Response(serializer.data)
     return response
 
-# @api_view(["POST"])
-# def createTask(request):
+@api_view(["POST"])
+def createReferenceTask(request):
     
-#     task_name = request.data["task_name"]
-#     created_at = timezone.now().date()
-#     overdue_at = datetime.date.fromisoformat(request.data["due"])
-#     required_effort = request.data["required_effort"]
+    task_name = request.data["name"]
+    created_at = timezone.now().date()
+    overdue_at = datetime.date.fromisoformat(request.data["remaining_time"])
+    required_effort = request.data["required_effort"]
     
-#     TaskModel.objects.create(
-#         name = task_name,
-#         created_at = created_at,
-#         overdue_at = overdue_at,
-#         remaining_time = (overdue_at - created_at).days,
-#         required_effort = required_effort
-#     )
-#     response = Response()
-#     return response
+    ReferenceTaskModel.objects.create(
+        name = task_name,
+        created_at = created_at,
+        overdue_at = overdue_at,
+        remaining_time = (overdue_at - created_at).days,
+        required_effort = required_effort
+    )
+    response = Response()
+    return response
 
 @api_view(["POST"])
 def createTask(request):

@@ -1,6 +1,6 @@
 <template>
 <div id="v-reference-task-list">
-  <form method="POST" v-on:submit.prevent="submit">
+  <form method="POST" v-on:submit.prevent="nop">
     <table>
       <thead>
         <tr>
@@ -16,7 +16,7 @@
             <td>{{ referenceTask.required_effort }}</td>
             <td>{{ referenceTask.remaining_time }}</td>
             <td>
-              <button type="submit" name="button" v-bind:value="referenceTask.name">Create</button>
+              <button type="submit" v-bind:name="referenceTask.name" v-bind:value="referenceTask.name" v-on:click="submit">Create</button>
             </td>
         </tr>
       </tbody>
@@ -46,8 +46,9 @@ export default {
     }
   },
   methods: {
+    nop: function() {},
     submit: function(event) {
-      let name = event.target.button.value
+      let name = event.target.name
       this.$emit("create-task", {
         name: name
       })

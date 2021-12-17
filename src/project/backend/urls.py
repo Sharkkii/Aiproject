@@ -5,5 +5,6 @@ urlpatterns = [
     path("get-task-list", views.getTaskList),
     path("get-reference-task-list", views.getReferenceTaskList),
     path("create-task", views.createTask),
+    path("create-reference-task", views.createReferenceTask),
     path("schedule-job", views.scheduleJob)
 ]
