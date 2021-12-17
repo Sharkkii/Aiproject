@@ -1,7 +1,7 @@
 <template>
-<div id="v-view-monitor">
+<div id="v-task-monitor">
   <div class="sub-header">
-    <p>View Monitor</p>
+    <p>Task Monitor</p>
   </div>
   <div class="task-list">
     <v-task-list v-bind:task-list="taskList">
@@ -11,7 +11,7 @@
 </template>
 
 <style scoped lang="scss">
-#v-view-monitor {
+#v-task-monitor {
   box-shadow: 0 0 5px $black;
   box-sizing: border-box;
   min-height: 400px;
@@ -29,7 +29,7 @@
 <script>
 import VTaskList from "../molecules/VTaskList.vue"
 export default {
-  name: "VViewMonitor",
+  name: "VTaskMonitor",
   components: {
     VTaskList
   },

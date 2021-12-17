@@ -2,8 +2,8 @@
 <div>
   <div id="v-dashboard">
     <div class="float-left">
-      <div class="v-control-panel">
-        <v-control-panel v-on:create-task="createTask"  v-on:create-reference-task="createReferenceTask" v-bind:reference-task-list="referenceTaskList"></v-control-panel>
+      <div class="v-task-panel">
+        <v-task-panel v-on:create-task="createTask"  v-on:create-reference-task="createReferenceTask" v-bind:reference-task-list="referenceTaskList"></v-task-panel>
       </div>
       <div class="v-schedule-panel">
         <v-schedule-panel v-on:schedule-job="scheduleJob">
@@ -11,8 +11,8 @@
       </div>
     </div>
     <div class="float-left">
-      <div class="v-view-monitor">
-        <v-view-monitor v-bind:task-list="taskList"></v-view-monitor>
+      <div class="v-task-monitor">
+        <v-task-monitor v-bind:task-list="taskList"></v-task-monitor>
       </div>
       <div class="v-schedule-monitor">
         <v-schedule-monitor v-bind:schedule-list="scheduleList"></v-schedule-monitor>
@@ -29,11 +29,11 @@
   justify-content: center;
 }
 
-.v-control-panel {
+.v-task-panel {
   margin: 10px;
 }
 
-.v-view-monitor {
+.v-task-monitor {
   margin: 10px;
 }
 
@@ -53,14 +53,14 @@
 <script>
 import VScheduleButton from '../molecules/VScheduleButton.vue'
 const axios = require("axios")
-import VControlPanel from "./VControlPanel.vue"
-import VViewMonitor from "./VViewMonitor.vue"
+import VTaskPanel from "./VTaskPanel.vue"
+import VTaskMonitor from "./VTaskMonitor.vue"
 import VSchedulePanel from './VSchedulePanel.vue'
 import VScheduleMonitor from './VScheduleMonitor.vue'
 export default {
   name: "VDashboard",
   components: {
-    VControlPanel, VViewMonitor, VSchedulePanel, VScheduleMonitor,
+    VTaskPanel, VTaskMonitor, VSchedulePanel, VScheduleMonitor,
     VScheduleButton
   },
   data: function() {

@@ -1,7 +1,7 @@
 <template>
-<div id="v-control-panel">
+<div id="v-task-panel">
   <div class="sub-header">
-    <p>Control Panel</p>
+    <p>Task Panel</p>
   </div>
   <v-reference-task-list v-bind:reference-task-list="referenceTaskList" v-on:create-task="createTask">
   </v-reference-task-list>
@@ -11,7 +11,7 @@
 </template>
 
 <style scoped lang="scss">
-#v-control-panel {
+#v-task-panel {
   box-shadow: 0 0 5px $black;
   box-sizing: border-box;
   padding: 20px;
@@ -29,7 +29,7 @@
 import VReferenceTaskList from '../molecules/VReferenceTaskList.vue'
 import VReferenceTaskCreateButton from '../molecules/VReferenceTaskCreateButton.vue'
 export default {
-  name: "VControlPanel",
+  name: "VTaskPanel",
   props: {
     referenceTaskList: {
       type: Array,
