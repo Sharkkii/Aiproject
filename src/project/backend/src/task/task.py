@@ -1,3 +1,5 @@
+import copy
+
 class Task:
 
     max_id = -1
@@ -21,6 +23,9 @@ class Task:
     
     def is_none(self):
         return (len(self.name) == 0) or (self.duration <= 0) or (self.deadline <= 0)
+
+    def copy(self):
+        return copy.deepcopy(self)
 
     def __eq__(a, b):
         return (a.id == b.id)

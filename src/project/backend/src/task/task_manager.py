@@ -44,29 +44,65 @@ class TaskManager:
     ):
         if (idx not in range(self.n_slot)):
             idx = np.random.choice(self.n_slot)
-        if (self.dirty_slot[idx].is_none() or do_override):
+        if (self.slot[idx].is_none() or do_override):
             self.dirty_slot[idx] = task
 
-    def update(
+    def decrement_required_effort(
         self,
         task,
-        name = None,
-        duration = None,
-        deadline = None
+        by = 1.0
     ):
-        for _task in range(self.slot):
+        old = task.duration # task.required_effort
+        new = old - by
+        self.update_required_effort(task, new)
+    
+    def update_required_effort(
+        self,
+        task,
+        value
+    ):
+        for _task in self.dirty_slot:
             if (task == _task):
-                if (name is not None): _task.name = name
-                if (duration is not None): _task.duration = duration
-                if (deadline is not None): _task.deadline = deadline
-                break
+                _task.duration = value
+
+    def decrement_remaining_time(
+        self,
+        task,
+        by = 1.0
+    ):
+        old = task.deadline # task.remaining_time
+        new = old - by
+        self.update_remaining_time(task, new)
+    
+    def update_remaining_time(
+        self,
+        task,
+        value
+    ):
+        for _task in self.dirty_slot:
+            if (task == _task):
+                _task.deadline = value
+
+    # def update(
+    #     self,
+    #     task,
+    #     name = None,
+    #     duration = None,
+    #     deadline = None
+    # ):
+    #     for _task in range(self.slot):
+    #         if (task == _task):
+    #             if (name is not None): _task.name = name
+    #             if (duration is not None): _task.duration = duration
+    #             if (deadline is not None): _task.deadline = deadline
+    #             break
     
     def delete(
         self,
         task
     ):
         for idx in range(self.n_slot):
-            if (task == self.dirty_slot[idx]):
+            if (task == self.slot[idx]):
                 self.dirty_slot[idx].none_()
                 break
 
@@ -74,4 +110,4 @@ class TaskManager:
         self
     ):
         for idx in range(self.n_slot):
-            self.slot[idx] = self.dirty_slot[idx]
+            self.slot[idx] = self.dirty_slot[idx].copy()
