@@ -1,28 +1,15 @@
 #### Controller ####
 
-class Controller:
+from ..lib.shaRL.src.controller import Controller
+
+class TaskController(Controller):
 
     def __init__(
         self,
-        env,
-        agent
+        *args,
+        **kwargs
     ):
-        self.env = env
-        self.agent = agent
-
-    def reset(
-        self
-    ):
-        _ = self.env.reset()
-        self.agent.reset()
-
-    def setup(
-        self
-    ):
-        self.env.setup()
-        self.agent.setup(
-            env = self.env
-        )
+        super().__init__(*args, **kwargs)
     
     def schedule_job(
         self,
