@@ -17,13 +17,13 @@
       </div>
     </div>
     <div class="tab train" v-if="checked.train">
-      <v-model-init-button>
+      <v-model-init-button v-on:initialize-model="initializeModel">
       </v-model-init-button>
-      <v-model-setup-button>
+      <v-model-setup-button v-on:setup-model="setupModel">
       </v-model-setup-button>
-      <v-model-train-button>
+      <v-model-train-button v-on:train-model="trainModel">
       </v-model-train-button>
-      <v-model-save-button>
+      <v-model-save-button v-on:save-model="saveModel">
       </v-model-save-button>
     </div>
     <div class="tab test" v-if="checked.test">
@@ -106,6 +106,18 @@ export default {
           }
         })
       }
+    },
+    initializeModel: function(data) {
+      this.$emit("initialize-model", data);
+    },
+    setupModel: function(data) {
+      this.$emit("setup-model", data);
+    },
+    trainModel: function(data) {
+      this.$emit("train-model", data);
+    },
+    saveModel: function(data) {
+      this.$emit("save-model", data);
     },
     loadModel: function(data) {
       this.$emit("load-model", data);

@@ -81,3 +81,59 @@ def scheduleJob(request):
     )
     response = JsonResponse(data)
     return response
+
+@api_view(["POST"])
+def initializeModel(request):
+
+    name = request.data["name"]
+    data = {
+        "name": name
+    }
+    response = JsonResponse(data)
+    return response
+
+@api_view(["POST"])
+def setupModel(request):
+
+    n_slot = request.data["n_slot"]
+    n_worker = request.data["n_worker"]
+    data = {
+        "n_slot": n_slot,
+        "n_worker": n_worker
+    }
+    response = JsonResponse(data)
+    return response
+
+@api_view(["POST"])
+def trainModel(request):
+
+    n_epoch = request.data["n_epoch"]
+    n_train_eval = request.data["n_train_eval"]
+    n_test_eval = request.data["n_test_eval"]
+    data = {
+        "n_epoch": n_epoch,
+        "n_train_eval": n_train_eval,
+        "n_test_eval": n_test_eval
+    }
+    response = JsonResponse(data)
+    return response
+
+@api_view(["POST"])
+def loadModel(request):
+
+    name = request.data["name"]
+    data = {
+        "name": name
+    }
+    response = JsonResponse(data)
+    return response
+
+@api_view(["POST"])
+def saveModel(request):
+
+    name = request.data["name"]
+    data = {
+        "name": name
+    }
+    response = JsonResponse(data)
+    return response

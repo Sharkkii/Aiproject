@@ -7,5 +7,10 @@ urlpatterns = [
     path("create-task", views.createTask),
     path("create-reference-task", views.createReferenceTask),
     path("delete-task", views.deleteTask),
-    path("schedule-job", views.scheduleJob)
+    path("schedule-job", views.scheduleJob),
+    path("initialize-model", views.initializeModel),
+    path("setup-model", views.setupModel),
+    path("train-model", views.trainModel),
+    path("load-model", views.loadModel),
+    path("save-model", views.saveModel)
 ]
