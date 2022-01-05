@@ -3,6 +3,8 @@
   <div class="sub-header">
     <p>RL Panel</p>
   </div>
+  <v-model-load-button v-on:load-model="loadModel">
+  </v-model-load-button>
 </div>
 </template>
 
@@ -23,7 +25,16 @@
 </style>
 
 <script>
+import VModelLoadButton from '../molecules/VModelLoadButton.vue'
 export default {
-  name: "VRlPanel"
+  name: "VRlPanel",
+  components: {
+    VModelLoadButton
+  },
+  methods: {
+    loadModel: function(data) {
+      this.$emit("load-model", data);
+    }
+  }
 }
 </script>

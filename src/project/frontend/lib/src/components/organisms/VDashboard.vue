@@ -10,7 +10,7 @@
         </v-schedule-panel>
       </div>
       <div class="v-rl-panel">
-        <v-rl-panel></v-rl-panel>
+        <v-rl-panel v-on:load-model="loadModel"></v-rl-panel>
       </div>
     </div>
     <div class="float-left">
@@ -21,7 +21,7 @@
         <v-schedule-monitor v-bind:schedule-list="scheduleList"></v-schedule-monitor>
       </div>
       <div class="v-rl-monitor">
-        <v-rl-monitor></v-rl-monitor>
+        <v-rl-monitor v-bind:model-information="modelInformation"></v-rl-monitor>
       </div>
     </div>
   </div>
@@ -82,7 +82,8 @@ export default {
     return {
       taskList: [],
       referenceTaskList: [],
-      scheduleList: {}
+      scheduleList: {},
+      modelInformation: {}
     }
   },
   methods: {
@@ -140,6 +141,16 @@ export default {
       .post("schedule-job", data)
       .then(function(response) {
         self.scheduleList = response.data
+      })
+    },
+    loadModel: function(data) {
+      let self = this
+      axios.defaults.xsrfCookieName = "csrftoken"
+      axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
+      axios
+      .post("load-model", data)
+      .then(function(response) {
+        self.modelInformation = response.data
       })
     }
   },

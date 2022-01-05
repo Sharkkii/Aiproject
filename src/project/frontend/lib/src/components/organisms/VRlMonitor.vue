@@ -3,6 +3,9 @@
   <div class="sub-header">
     <p>RL Monitor</p>
   </div>
+  <div>
+    <p>{{ modelInformation }}</p>
+  </div>
 </div>
 </template>
 
@@ -24,6 +27,12 @@
 
 <script>
 export default {
-  name: "VRlMonitor"
+  name: "VRlMonitor",
+  props: {
+    modelInformation: {
+      type: Object,
+      default: {}
+    }
+  }
 }
 </script>
