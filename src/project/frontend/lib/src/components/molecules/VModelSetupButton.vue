@@ -5,13 +5,13 @@
       <div class="item">
         <label>
           <p>n_slot</p>
-          <div><input type="text" v-model="configuration.nSlot"></div>
+          <div><input type="text" v-model="nSlot"></div>
         </label>
       </div>
       <div class="item">
         <label>
           <p>n_worker</p>
-          <div><input type="text" v-model="configuration.nWorker"></div>
+          <div><input type="text" v-model="nWorker"></div>
         </label>
       </div>
       <div class="item">
@@ -56,10 +56,8 @@ export default {
   name: "VModelSetupButton",
   data: function() {
     return {
-      configuration: {
-        "nSlot": 5,
-        "nWorker": 1
-      }
+      nSlot: 5,
+      nWorker: 1
     }
   },
   methods: {
@@ -68,7 +66,8 @@ export default {
     },
     submit: function() {
       this.setupModel({
-        configuration: this.configuration
+        n_slot: this.nSlot,
+        n_worker: this.nWorker
       })
     }
   }

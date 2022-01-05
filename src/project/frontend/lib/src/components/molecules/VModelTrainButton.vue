@@ -5,19 +5,19 @@
       <div class="item">
         <label>
           <p>n_epoch</p>
-          <div><input type="text" v-model="configuration.nEpoch"></div>
+          <div><input type="text" v-model="nEpoch"></div>
         </label>
       </div>
       <div class="item">
         <label>
           <p>n_train_eval</p>
-          <div><input type="text" v-model="configuration.nTrainEval"></div>
+          <div><input type="text" v-model="nTrainEval"></div>
         </label>
       </div>
       <div class="item">
         <label>
           <p>n_test_eval</p>
-          <div><input type="text" v-model="configuration.nTestEval"></div>
+          <div><input type="text" v-model="nTestEval"></div>
         </label>
       </div>
       <div class="item">
@@ -62,11 +62,9 @@ export default {
   name: "VModelTrainButton",
   data: function() {
     return {
-      configuration: {
-        "nEpoch": 100,
-        "nTrainEval": 5,
-        "nTestEval": 5
-      }
+      nEpoch: 100,
+      nTrainEval: 5,
+      nTestEval: 5
     }
   },
   methods: {
@@ -75,7 +73,9 @@ export default {
     },
     submit: function() {
       this.trainModel({
-        configuration: this.configuration
+        n_epoch: this.nEpoch,
+        n_train_eval: this.nTrainEval,
+        n_test_eval: this.nTestEval
       })
     }
   }

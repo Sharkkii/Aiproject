@@ -54,11 +54,11 @@ export default {
     }
   },
   methods: {
-    initModel: function(data) {
-      this.$emit("init-model", data);
+    initializeModel: function(data) {
+      this.$emit("initialize-model", data);
     },
     submit: function() {
-      this.initModel({
+      this.initializeModel({
         name: this.name
       })
     }
