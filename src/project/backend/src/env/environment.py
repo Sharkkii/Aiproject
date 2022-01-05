@@ -70,6 +70,15 @@ class TaskEnvironment:
         POSITIVE_REWARD = 1.0
         NEGATIVE_REWARD = -1.0
         reward = 0.0
+        info = {
+            "before": 0,
+            "created": 0,
+            "deleted": 0,
+            "completed": 0,
+            "after": 0
+        }
+
+        info["before"] = self.task_manager.count()
 
         # decode input & remove duplicates
         action = self.decode_action(action)
@@ -90,6 +99,7 @@ class TaskEnvironment:
                         is_completed = True
                         self.task_manager.delete(task)
                         reward += POSITIVE_REWARD
+                        info["completed"] += 1
 
             # decrement remaining_time
             if (is_completed): continue
@@ -97,9 +107,10 @@ class TaskEnvironment:
             if (self.task_manager.dirty_slot[idx].deadline <= 0):
                 self.task_manager.delete(task)
                 reward += NEGATIVE_REWARD
+                info["deleted"] += 1
 
         # create new task
-        self.create_new_task()
+        info["created"] = self.create_new_task()
 
         # commit changes
         self.task_manager.commit()
@@ -107,8 +118,10 @@ class TaskEnvironment:
         self.t = self.t + 1
         self.set_state()
         observation = np.array(self.state, dtype=np.float32)
+
         done = (self.t >= self.T)
-        info = self.task_manager
+        info["after"] = self.task_manager.count()
+        # info = self.task_manager
         return observation, reward, done, info
 
     def set_state(
@@ -167,29 +180,73 @@ class TaskEnvironment:
         self,
         do_commit = False
     ):
+        created = [False for _ in range(self.n_slot)]
         for name, value in self.spec.items():
             r = np.random.rand()
             if (value["P"] <= r):
                 task = Task(name, value["required_effort"], value["remaining_time"])
-                self.task_manager.create(
+                idx = value["slot"]
+                created[idx] = self.task_manager.create(
                     task,
-                    idx = value["slot"],
+                    idx = idx,
                     do_override = False
                 )
+
         if (do_commit):
             self.task_manager.commit()
+        return sum(created)
 
     def score(
         self,
-        history
+        history,
+        info_history = None
     ):
         score_dictionary = {
-            "total_reward": None
+            "total_reward": None,
+            "before": None,
+            "created": None,
+            "deleted": None,
+            "completed": None,
+            "after": None,
+            "progress": None,
+            "efficiency": None,
+            "effectiveness": None,
+            "covered": None,
+            "missed": None,
+            "occupancy": None
         }
-        if (len(history) > 0):
-            total_reward = 0
-            for (_, _, r, _) in history:
-                total_reward = total_reward + r
-            total_reward = int(total_reward)
+
+
+        H = len(history)
+        if (H > 0):
+
+            reward = [ r for (_, _, r, _) in history ]
+            total_reward = sum(reward)
             score_dictionary["total_reward"] = total_reward
+
+        if (info_history is None):
+            return score_dictionary
+        
+        I = len(info_history)
+        J = 10
+        assert(H == I)
+        if (I > 0):
+
+            created = [ info["created"] for info in info_history ]
+            deleted = [ info["deleted"] for info in info_history ]
+            completed = [ info["completed"] for info in info_history ]
+
+            weight = np.ones(J) / J
+            created = np.convolve(created, weight, mode="same")
+            deleted = np.convolve(deleted, weight, mode="same")
+            completed = np.convolve(completed, weight, mode="same")
+
+            score_dictionary["created"] = created
+            score_dictionary["deleted"] = deleted
+            score_dictionary["completed"] = completed
+            score_dictionary["before"] = info_history[0]["before"]
+            score_dictionary["after"] = info_history[-1]["after"]
+            score_dictionary["covered"] = np.where(created > 0, completed / created, 1.0)
+            score_dictionary["missed"] = np.where(created > 0, deleted / created, 1.0)
+
         return score_dictionary

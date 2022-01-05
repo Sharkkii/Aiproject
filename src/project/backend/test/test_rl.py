@@ -11,8 +11,8 @@ from src.lib.shaRL.src.optimizer import Optimizer
 def test_rl():
 
     scheduler = JobScheduler(
-        n_slot = 3,
-        n_worker = 2
+        n_slot = 5,
+        n_worker = 1
     )
 
     d_observation = scheduler.env.observation_space.low.size

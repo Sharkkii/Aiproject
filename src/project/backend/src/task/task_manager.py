@@ -35,6 +35,15 @@ class TaskManager:
     ):
         self.dirty_slot = [Task() for _ in range(self.n_slot)]
         self.slot = [Task() for _ in range(self.n_slot)]
+
+    def count(
+        self
+    ):
+        n = 0
+        for task in self.slot:
+            if (not task.is_none()):
+                n += 1
+        return n
     
     def create(
         self,
@@ -46,6 +55,9 @@ class TaskManager:
             idx = np.random.choice(self.n_slot)
         if (self.slot[idx].is_none() or do_override):
             self.dirty_slot[idx] = task
+            return True
+        else:
+            return False
 
     def decrement_required_effort(
         self,

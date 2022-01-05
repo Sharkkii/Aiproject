@@ -1,7 +1,7 @@
 #### Agent ####
 
+from ..lib.shaRL.src.const import PhaseType
 from ..lib.shaRL.src.core import DQN
-from ..lib.shaRL.src.controller import Phases
 
 class TaskAgent(DQN):
 
@@ -25,7 +25,7 @@ class TaskAgent(DQN):
             for _ in range(n_step):
                 action = self.actor.choose_action(
                     state,
-                    phase = Phases.TEST
+                    phase = PhaseType.TEST
                 )
                 schedule.append(action)
             schedule_list.append(schedule)

@@ -16,8 +16,9 @@ def test_add_environment():
     for _ in range(10):
         action = env.action_space.sample()
         state, reward, done, info = env.step(action)
-        print(action, env.decode_action(action), env.encode_action(env.decode_action(action)))
-        print(state.reshape(n_slot, -1), reward)
+        print(action)
+        print(state.reshape(n_slot, -1))
+        print(reward, info)
 
 if __name__ == "__main__":
     test_add_environment()
