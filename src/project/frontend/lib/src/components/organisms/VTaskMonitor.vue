@@ -16,7 +16,7 @@
   box-sizing: border-box;
   min-height: 400px;
   padding: 20px;
-  width: 800px;
+  width: 600px;
 }
 
 .sub-header {

@@ -15,7 +15,7 @@
   box-shadow: 0 0 5px $black;
   box-sizing: border-box;
   padding: 20px;
-  width: 400px;
+  width: 600px;
 }
 
 .sub-header {
