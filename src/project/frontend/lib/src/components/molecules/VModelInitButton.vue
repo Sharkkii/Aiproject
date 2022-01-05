@@ -1,5 +1,5 @@
 <template>
-<div id="v-model-load-button">
+<div id="v-model-init-button">
   <form method="POST" v-on:submit.prevent="submit">
     <div class="items">
       <div class="item">
@@ -10,7 +10,7 @@
       </div>
       <div class="item">
         <button type="submit">
-          <p>Load Model</p>
+          <p>Initialize Model</p>
         </button>
       </div>
     </div>
@@ -47,18 +47,18 @@
 
 <script>
 export default {
-  name: "VModelLoadButton",
+  name: "VModelInitButton",
   data: function() {
     return {
       name: ""
     }
   },
   methods: {
-    loadModel: function(data) {
-      this.$emit("load-model", data);
+    initModel: function(data) {
+      this.$emit("init-model", data);
     },
     submit: function() {
-      this.loadModel({
+      this.initModel({
         name: this.name
       })
     }
