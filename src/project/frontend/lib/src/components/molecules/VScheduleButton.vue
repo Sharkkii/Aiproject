@@ -8,6 +8,12 @@
       </label>
     </div>
     <div class="item">
+      <label>
+        <p>Sample</p>
+        <div><input type="number" v-model="nSample"></div>
+      </label>
+    </div>
+    <div class="item">
       <button type="submit">
         <p>Try Job-Scheduling</p>
       </button>
@@ -39,16 +45,18 @@ export default {
   name: "VScheduleButton",
   data: function() {
     return {
-      nStep: 1
+      nStep: 1,
+      nSample: 1
     }
   },
   methods: {
-    scheduleJob: function(data) {
-      this.$emit("schedule-job", data)
+    getBestSchedule: function(data) {
+      this.$emit("get-best-schedule", data)
     },
     submit: function() {
-      this.scheduleJob({
-        n_step: this.nStep
+      this.getBestSchedule({
+        n_step: this.nStep,
+        n_sample: this.nSample
       })
     }
   }

@@ -115,17 +115,13 @@ class JobScheduler:
             path_to_qvalue = path_to_qvalue
         )
     
-    def schedule_job(
+    def get_best_schedule(
         self,
         n_step,
-        k = 1
+        n_sample = 1
     ):
-        schedule_list = self.controller.schedule_job(
+        schedules = self.controller.get_best_schedule(
             n_step = n_step,
-            k = k
+            n_sample = n_sample
         )
-        return {
-            "schedule_list": schedule_list
-        }
-
-    
+        return schedules

@@ -12,13 +12,13 @@ class TaskAgent(DQN):
     ):
         super().__init__(*args, **kwargs)
 
-    def get_best_schedule_list(
+    def get_best_schedule(
         self,
         env,
         n_step = 1,
         n_sample = 1
     ):
-        schedule_list = []
+        schedules = []
         for _ in range(n_sample):
             schedule = []
             state = env.reset()
@@ -28,5 +28,5 @@ class TaskAgent(DQN):
                     phase = PhaseType.TEST
                 )
                 schedule.append(action)
-            schedule_list.append(schedule)
-        return schedule_list
+            schedules.append(schedule)
+        return schedules

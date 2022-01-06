@@ -3,7 +3,7 @@
   <div class="sub-header">
     <p>Schedule Panel</p>
   </div>
-  <v-job-schedule-button v-on:schedule-job="scheduleJob">
+  <v-job-schedule-button v-on:get-best-schedule="getBestSchedule">
   </v-job-schedule-button>
 </div>
 </template>
@@ -31,8 +31,8 @@ export default {
     VJobScheduleButton
   },
   methods: {
-    scheduleJob: function(data) {
-      this.$emit("schedule-job", data)
+    getBestSchedule: function(data) {
+      this.$emit("get-best-schedule", data)
     }
   }
 }

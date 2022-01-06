@@ -4,9 +4,14 @@
     <p>Schedule Monitor</p>
   </div>
   <div class="schedule-list">
-    <p>
-      Best Schedule: {{ scheduleList }} 
-    </p>
+    <div>
+      <p>Best Schedule</p>
+    </div>
+    <div v-for="schedule in scheduleList" v-bind:key="schedule.id">
+      <span v-for="action in schedule" v-bind:key="action.id">
+        {{ action }} ->
+      </span>
+    </div>
   </div>
 </div>
 </template>

@@ -94,16 +94,6 @@ def deleteTask(request):
     return response
 
 @api_view(["POST"])
-def scheduleJob(request):
-
-    n_step = int(request.data["n_step"])
-    data = job_scheduler.schedule_job(
-        n_step = n_step
-    )
-    response = JsonResponse(data)
-    return response
-
-@api_view(["POST"])
 def initializeModel(request):
 
     global model
@@ -219,7 +209,7 @@ def loadModel(request):
             n_worker = n_worker
         )
         job_scheduler.setup()
-        
+
         model["name"] = request.data["name"]
         job_scheduler.load(
             path_to_policy = "policy_" + model["name"],
@@ -288,5 +278,22 @@ def saveModel(request):
         "status": status,
         "model_status": model["status"]
     }
+    response = JsonResponse(data)
+    return response
+
+@api_view(["POST"])
+def getBestSchedule(request):
+
+    global job_scheduler
+
+    n_step = int(request.data["n_step"])
+    n_sample = int(request.data["n_sample"])
+    schedules = job_scheduler.get_best_schedule(
+        n_step = n_step,
+        n_sample = n_sample
+    )
+
+    data = pd.DataFrame(schedules).T
+    data = data.to_dict()
     response = JsonResponse(data)
     return response

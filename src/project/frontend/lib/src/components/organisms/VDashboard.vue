@@ -6,7 +6,7 @@
         <v-task-panel v-on:create-task="createTask"  v-on:create-reference-task="createReferenceTask" v-bind:reference-task-list="referenceTaskList"></v-task-panel>
       </div>
       <div class="v-schedule-panel">
-        <v-schedule-panel v-on:schedule-job="scheduleJob">
+        <v-schedule-panel v-on:get-best-schedule="getBestSchedule">
         </v-schedule-panel>
       </div>
       <div class="v-rl-panel">
@@ -143,12 +143,12 @@ export default {
         self.getTaskList()
       })
     },
-    scheduleJob: function(data) {
+    getBestSchedule: function(data) {
       let self = this
       axios.defaults.xsrfCookieName = "csrftoken"
       axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
       axios
-      .post("schedule-job", data)
+      .post("get-best-schedule", data)
       .then(function(response) {
         self.scheduleList = response.data
       })

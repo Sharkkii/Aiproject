@@ -23,14 +23,14 @@ class TaskController(Controller):
         print("covered", np.mean(train_score["covered"]), np.mean(test_score["covered"]))
         print("missed", np.mean(train_score["missed"]), np.mean(test_score["missed"]))
     
-    def schedule_job(
+    def get_best_schedule(
         self,
         n_step = 1,
-        k = 1
+        n_sample = 1
     ):
-        schedule_list = self.agent.get_best_schedule_list(
+        schedules = self.agent.get_best_schedule(
             self.env,
             n_step = n_step,
-            k = k
+            n_sample = n_sample
         )
-        return schedule_list
+        return schedules
