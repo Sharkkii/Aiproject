@@ -7,7 +7,7 @@
     <table>
       <tr>
         <td>model name</td>
-        <td>{{ modelInformation.name }} ( {{ modelInformation.modelStatus }} )</td>
+        <td>{{ modelInformation.modelName }} ( {{ modelInformation.modelStatus }} )</td>
       </tr>
       <tr>
         <td>n_slot</td>

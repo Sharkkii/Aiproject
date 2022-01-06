@@ -107,18 +107,18 @@ def scheduleJob(request):
 def initializeModel(request):
 
     global model
-    name = request.data["name"]
-    queryset = RlAgentModel.objects.filter(pk=name)
+
+    queryset = RlAgentModel.objects.filter(pk=request.data["name"])
 
     if (not queryset.exists()):
-        model["name"] = name
+        model["name"] = request.data["name"]
         model["status"] = ModelStatus.NEW
         status = Status.SUCCESS
     else:
         status = Status.FAIL
 
     data = {
-        "name": model["name"],
+        "model_name": model["name"],
         "status": status,
         "model_status": model["status"]
     }   
@@ -153,6 +153,7 @@ def trainModel(request):
     global n_epoch
     global n_train_eval
     global n_test_eval
+    global model
     global job_scheduler
 
     n_epoch = int(request.data["n_epoch"])
@@ -177,13 +178,23 @@ def trainModel(request):
         )
         score["covered"] = np.mean(test_score["covered"])
         score["missed"] = np.mean(test_score["missed"])
+        
+        if (model["status"] == ModelStatus.COMMITTED):
+            model["status"] = ModelStatus.MODIFIED
+        status = Status.SUCCESS
+    
+    else:
+        status = Status.FAIL
 
     data = {
         "n_epoch": n_epoch,
         "n_train_eval": n_train_eval,
         "n_test_eval": n_test_eval,
         "covered": score["covered"],
-        "missed": score["missed"]
+        "missed": score["missed"],
+        "model_name": model["name"],
+        "status": status,
+        "model_status": model["status"]
     }
     response = JsonResponse(data)
     return response
@@ -191,20 +202,39 @@ def trainModel(request):
 @api_view(["POST"])
 def loadModel(request):
 
+    global n_slot
+    global n_worker
     global model
-    name = request.data["name"]
-    queryset = RlAgentModel.objects.filter(pk=name)
+    global job_scheduler
+
+    queryset = RlAgentModel.objects.filter(pk=request.data["name"])
 
     if (queryset.exists()):
-        #### load model ####
-        model["name"] = name
+
+        entry = queryset.first()
+        n_slot = entry.n_slot
+        n_worker = entry.n_worker
+        job_scheduler = JobScheduler(
+            n_slot = n_slot,
+            n_worker = n_worker
+        )
+        job_scheduler.setup()
+        
+        model["name"] = request.data["name"]
+        job_scheduler.load(
+            path_to_policy = "policy_" + model["name"],
+            path_to_value = "value_" + model["name"],
+            path_to_qvalue = "qvalue_" + model["name"]
+        )
+
         model["status"] = ModelStatus.COMMITTED
         status = Status.SUCCESS
+
     else:
         status = Status.FAIL
     
     data = {
-        "name": model["name"],
+        "model_name": model["name"],
         "status": status,
         "model_status": model["status"]
     }
@@ -217,34 +247,44 @@ def saveModel(request):
     global n_slot
     global n_worker
     global model
-    name = model["name"]
-    model_status = model["status"]
+    global job_scheduler
 
-    queryset = RlAgentModel.objects.filter(pk=name)
-    if (queryset.exists() and (model_status == ModelStatus.MODIFIED)):
+    queryset = RlAgentModel.objects.filter(pk=model["name"])
+
+    if (queryset.exists() and (model["status"] == ModelStatus.MODIFIED)):
         entry = queryset.first()
-        entry["model_status"] = model["status"] = ModelStatus.COMMITTED
+        entry.model_status = model["status"] = ModelStatus.COMMITTED
         entry.save()
+        job_scheduler.save(
+            path_to_policy = "policy_" + model["name"],
+            path_to_value = "value_" + model["name"],
+            path_to_qvalue = "qvalue_" + model["name"]
+        )
         status = Status.SUCCESS
         
-    elif ((not queryset.exists()) and (model_status == ModelStatus.NEW)):
+    elif ((not queryset.exists()) and (model["status"] == ModelStatus.NEW)):
         RlAgentModel.objects.create(
             name = model["name"],
             n_slot = n_slot,
             n_worker = n_worker,
             # env_name = ""
         )
+        job_scheduler.save(
+            path_to_policy = "policy_" + model["name"],
+            path_to_value = "value_" + model["name"],
+            path_to_qvalue = "qvalue_" + model["name"]
+        )
         model["status"] = ModelStatus.COMMITTED
         status = Status.SUCCESS
 
-    elif (model_status == ModelStatus.COMMITTED):
+    elif (model["status"] == ModelStatus.COMMITTED):
         status = Status.SUCCESS
 
     else:
         status = Status.FAIL
     
     data = {
-        "name": model["name"],
+        "model_name": model["name"],
         "status": status,
         "model_status": model["status"]
     }

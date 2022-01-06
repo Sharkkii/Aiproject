@@ -162,7 +162,7 @@ export default {
       .then(function(response) {
         let oldData = Object.assign({}, self.modelInformation)
         let newData = Object.assign(oldData, {
-          name: response.data["name"],
+          modelName: response.data["model_name"],
           modelStatus: response.data["model_status"]
         })
         self.modelInformation = newData
@@ -193,8 +193,15 @@ export default {
       axios
       .post("train-model", data)
       .then(function(response) {
+
+        let oldModelInformation = Object.assign({}, self.modelInformation)
         let oldModelConfiguration = Object.assign({}, self.modelConfiguration)
         let oldModelScore = Object.assign({}, self.modelScore)
+
+        let newModelInformation = Object.assign(oldModelInformation, {
+          modelName: response.data["model_name"],
+          modelStatus: response.data["model_status"]
+        })
         let newModelConfiguration = Object.assign(oldModelConfiguration, {
           nEpoch: response.data["n_epoch"],
           nTrainEval: response.data["n_train_eval"],
@@ -204,8 +211,13 @@ export default {
           covered: response.data["covered"],
           missed: response.data["missed"]
         })
+
+        self.modelInformation = newModelInformation
         self.modelConfiguration = newModelConfiguration
         self.modelScore = newModelScore
+
+        status = response.data["status"]
+        console.log("train-model", status)
       })
     },
     saveModel: function(data) {
@@ -217,13 +229,13 @@ export default {
       .then(function(response) {
         let oldData = Object.assign({}, self.modelInformation)
         let newData = Object.assign(oldData, {
-          name: response.data["name"],
+          modelName: response.data["model_name"],
           modelStatus: response.data["model_status"]
         })
         self.modelInformation = newData
 
         status = response.data["status"]
-        console.log("initialize-model", status)
+        console.log("save-model", status)
       })
     },
     loadModel: function(data) {
@@ -235,13 +247,13 @@ export default {
       .then(function(response) {
         let oldData = Object.assign({}, self.modelInformation)
         let newData = Object.assign(oldData, {
-          name: response.data["name"],
+          modelName: response.data["model_name"],
           modelStatus: response.data["model_status"]
         })
         self.modelInformation = newData
 
         status = response.data["status"]
-        console.log("initialize-model", status)
+        console.log("load-model", status)
       })
     }
   },
