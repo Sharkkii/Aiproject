@@ -1,22 +1,37 @@
 import datetime
+from enum import Enum
 import numpy as np
 import pandas as pd
 from django.utils import timezone
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .models import TaskModel, ReferenceTaskModel
-from .serializers import TaskListSerializer, ReferenceTaskListSerializer
+from .models import TaskModel, ReferenceTaskModel, RlAgentModel
+from .serializers import TaskListSerializer, ReferenceTaskListSerializer, RlAgentSerializer
 from django.http import JsonResponse
 from .src.scheduler import JobScheduler
 
 # Create your views here.
 
-name = None
-n_slot = None
-n_worker = None
-n_epoch = None
-n_train_eval = None
-n_test_eval = None
+class Status(str, Enum):
+    NONE = ""
+    SUCCESS = "success"
+    FAIL = "fail"
+
+class ModelStatus(str, Enum):
+    NONE = ""
+    NEW = "new"
+    MODIFIED = "modified"
+    COMMITTED = "committed"
+
+model = {
+    "name": "",
+    "status": ModelStatus.NONE
+}
+n_slot = -1
+n_worker = -1
+n_epoch = -1
+n_train_eval = -1
+n_test_eval = -1
 job_scheduler = None
 
 @api_view(["GET"])
@@ -91,11 +106,22 @@ def scheduleJob(request):
 @api_view(["POST"])
 def initializeModel(request):
 
-    global name
+    global model
     name = request.data["name"]
+    queryset = RlAgentModel.objects.filter(pk=name)
+
+    if (not queryset.exists()):
+        model["name"] = name
+        model["status"] = ModelStatus.NEW
+        status = Status.SUCCESS
+    else:
+        status = Status.FAIL
+
     data = {
-        "name": name
-    }
+        "name": model["name"],
+        "status": status,
+        "model_status": model["status"]
+    }   
     response = JsonResponse(data)
     return response
 
@@ -165,10 +191,22 @@ def trainModel(request):
 @api_view(["POST"])
 def loadModel(request):
 
-    global name
+    global model
     name = request.data["name"]
+    queryset = RlAgentModel.objects.filter(pk=name)
+
+    if (queryset.exists()):
+        #### load model ####
+        model["name"] = name
+        model["status"] = ModelStatus.COMMITTED
+        status = Status.SUCCESS
+    else:
+        status = Status.FAIL
+    
     data = {
-        "name": name
+        "name": model["name"],
+        "status": status,
+        "model_status": model["status"]
     }
     response = JsonResponse(data)
     return response
@@ -176,10 +214,39 @@ def loadModel(request):
 @api_view(["POST"])
 def saveModel(request):
 
-    global name
-    name = request.data["name"]
+    global n_slot
+    global n_worker
+    global model
+    name = model["name"]
+    model_status = model["status"]
+
+    queryset = RlAgentModel.objects.filter(pk=name)
+    if (queryset.exists() and (model_status == ModelStatus.MODIFIED)):
+        entry = queryset.first()
+        entry["model_status"] = model["status"] = ModelStatus.COMMITTED
+        entry.save()
+        status = Status.SUCCESS
+        
+    elif ((not queryset.exists()) and (model_status == ModelStatus.NEW)):
+        RlAgentModel.objects.create(
+            name = model["name"],
+            n_slot = n_slot,
+            n_worker = n_worker,
+            # env_name = ""
+        )
+        model["status"] = ModelStatus.COMMITTED
+        status = Status.SUCCESS
+
+    elif (model_status == ModelStatus.COMMITTED):
+        status = Status.SUCCESS
+
+    else:
+        status = Status.FAIL
+    
     data = {
-        "name": name
+        "name": model["name"],
+        "status": status,
+        "model_status": model["status"]
     }
     response = JsonResponse(data)
     return response

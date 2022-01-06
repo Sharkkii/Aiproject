@@ -3,7 +3,7 @@
   <form method="POST" v-on:submit.prevent="submit">
     <div class="items">
       <div class="item">
-        <button type="submit" disabled>
+        <button type="submit">
           <p>Save Model</p>
         </button>
       </div>
