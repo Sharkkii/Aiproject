@@ -27,6 +27,7 @@ class TaskAgent(DQN):
                     state,
                     phase = PhaseType.TEST
                 )
+                state, reward, done, info = env.step(action)
                 schedule.append(action)
             schedules.append(schedule)
         return schedules
