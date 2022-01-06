@@ -1,4 +1,6 @@
 import datetime
+import numpy as np
+import pandas as pd
 from django.utils import timezone
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -9,9 +11,13 @@ from .src.scheduler import JobScheduler
 
 # Create your views here.
 
-scheduler = JobScheduler(
-    n_slot = 3
-)
+name = None
+n_slot = None
+n_worker = None
+n_epoch = None
+n_train_eval = None
+n_test_eval = None
+job_scheduler = None
 
 @api_view(["GET"])
 def getTaskList(request):
@@ -76,7 +82,7 @@ def deleteTask(request):
 def scheduleJob(request):
 
     n_step = int(request.data["n_step"])
-    data = scheduler.schedule_job(
+    data = job_scheduler.schedule_job(
         n_step = n_step
     )
     response = JsonResponse(data)
@@ -85,6 +91,7 @@ def scheduleJob(request):
 @api_view(["POST"])
 def initializeModel(request):
 
+    global name
     name = request.data["name"]
     data = {
         "name": name
@@ -95,8 +102,18 @@ def initializeModel(request):
 @api_view(["POST"])
 def setupModel(request):
 
+    global n_slot
+    global n_worker
+    global job_scheduler
+
     n_slot = request.data["n_slot"]
     n_worker = request.data["n_worker"]
+    job_scheduler = JobScheduler(
+        n_slot = n_slot,
+        n_worker = n_worker
+    )
+    job_scheduler.setup()
+    
     data = {
         "n_slot": n_slot,
         "n_worker": n_worker
@@ -107,13 +124,40 @@ def setupModel(request):
 @api_view(["POST"])
 def trainModel(request):
 
-    n_epoch = request.data["n_epoch"]
-    n_train_eval = request.data["n_train_eval"]
-    n_test_eval = request.data["n_test_eval"]
+    global n_epoch
+    global n_train_eval
+    global n_test_eval
+    global job_scheduler
+
+    n_epoch = int(request.data["n_epoch"])
+    n_train_eval = int(request.data["n_train_eval"])
+    n_test_eval = int(request.data["n_test_eval"])
+
+    score = {
+        "covered": -1,
+        "missed": -1
+    }
+
+    if (job_scheduler is not None):
+        job_scheduler.train(
+            n_epoch = n_epoch,
+            n_train_eval = n_train_eval,
+            n_test_eval = n_test_eval,
+            env_step = 1
+        )
+        train_score, test_score = job_scheduler.controller.evaluate(
+            n_train_eval = n_train_eval,
+            n_test_eval = n_test_eval
+        )
+        score["covered"] = np.mean(test_score["covered"])
+        score["missed"] = np.mean(test_score["missed"])
+
     data = {
         "n_epoch": n_epoch,
         "n_train_eval": n_train_eval,
-        "n_test_eval": n_test_eval
+        "n_test_eval": n_test_eval,
+        "covered": score["covered"],
+        "missed": score["missed"]
     }
     response = JsonResponse(data)
     return response
@@ -121,6 +165,7 @@ def trainModel(request):
 @api_view(["POST"])
 def loadModel(request):
 
+    global name
     name = request.data["name"]
     data = {
         "name": name
@@ -131,6 +176,7 @@ def loadModel(request):
 @api_view(["POST"])
 def saveModel(request):
 
+    global name
     name = request.data["name"]
     data = {
         "name": name

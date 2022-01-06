@@ -203,17 +203,17 @@ class TaskEnvironment:
     ):
         score_dictionary = {
             "total_reward": None,
-            "before": None,
+            # "before": None,
             "created": None,
             "deleted": None,
             "completed": None,
-            "after": None,
-            "progress": None,
-            "efficiency": None,
-            "effectiveness": None,
+            # "after": None,
+            # "progress": None,
+            # "efficiency": None,
+            # "effectiveness": None,
             "covered": None,
             "missed": None,
-            "occupancy": None
+            # "occupancy": None
         }
 
 
@@ -228,25 +228,23 @@ class TaskEnvironment:
             return score_dictionary
         
         I = len(info_history)
-        J = 10
         assert(H == I)
         if (I > 0):
 
-            created = [ info["created"] for info in info_history ]
-            deleted = [ info["deleted"] for info in info_history ]
-            completed = [ info["completed"] for info in info_history ]
-
-            weight = np.ones(J) / J
-            created = np.convolve(created, weight, mode="same")
-            deleted = np.convolve(deleted, weight, mode="same")
-            completed = np.convolve(completed, weight, mode="same")
+            before = info_history[0]["before"]
+            created = np.sum([ info["created"] for info in info_history ])
+            deleted = np.sum([ info["deleted"] for info in info_history ])
+            completed = np.sum([ info["completed"] for info in info_history ])
+            after = info_history[-1]["after"]
 
             score_dictionary["created"] = created
             score_dictionary["deleted"] = deleted
             score_dictionary["completed"] = completed
-            score_dictionary["before"] = info_history[0]["before"]
-            score_dictionary["after"] = info_history[-1]["after"]
-            score_dictionary["covered"] = np.where(created > 0, completed / created, 1.0)
-            score_dictionary["missed"] = np.where(created > 0, deleted / created, 1.0)
+            if (before + created > 0):
+                score_dictionary["covered"] = completed / (before + created)
+                score_dictionary["missed"] = deleted / (before + created)
+            else:
+                score_dictionary["covered"] = 1.0
+                score_dictionary["missed"] = 1.0
 
         return score_dictionary

@@ -29,6 +29,14 @@
         <td>n_test_eval</td>
         <td>{{ modelConfiguration.nTestEval }}</td>
       </tr>
+      <tr>
+        <td>covered</td>
+        <td>{{ modelScore.covered }}</td>
+      </tr>
+      <tr>
+        <td>missed</td>
+        <td>{{ modelScore.missed }}</td>
+      </tr>
     </table>
   </div>
 </div>
@@ -72,6 +80,12 @@ export default {
       }
     },
     modelConfiguration: {
+      type: Object,
+      default: function() {
+        return {}
+      }
+    },
+    modelScore: {
       type: Object,
       default: function() {
         return {}

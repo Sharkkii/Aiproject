@@ -28,7 +28,7 @@
         <v-schedule-monitor v-bind:schedule-list="scheduleList"></v-schedule-monitor>
       </div>
       <div class="v-rl-monitor">
-        <v-rl-monitor v-bind:model-information="modelInformation" v-bind:model-configuration="modelConfiguration">
+        <v-rl-monitor v-bind:model-information="modelInformation" v-bind:model-configuration="modelConfiguration" v-bind:model-score="modelScore">
         </v-rl-monitor>
       </div>
     </div>
@@ -92,7 +92,8 @@ export default {
       referenceTaskList: [],
       scheduleList: {},
       modelInformation: {},
-      modelConfiguration: {}
+      modelConfiguration: {},
+      modelScore: {}
     }
   },
   methods: {
@@ -188,13 +189,19 @@ export default {
       axios
       .post("train-model", data)
       .then(function(response) {
-        let oldData = Object.assign({}, self.modelConfiguration)
-        let newData = Object.assign(oldData, {
+        let oldModelConfiguration = Object.assign({}, self.modelConfiguration)
+        let oldModelScore = Object.assign({}, self.modelScore)
+        let newModelConfiguration = Object.assign(oldModelConfiguration, {
           nEpoch: response.data["n_epoch"],
           nTrainEval: response.data["n_train_eval"],
           nTestEval: response.data["n_test_eval"]
         })
-        self.modelConfiguration = newData
+        let newModelScore = Object.assign(oldModelScore, {
+          covered: response.data["covered"],
+          missed: response.data["missed"]
+        })
+        self.modelConfiguration = newModelConfiguration
+        self.modelScore = newModelScore
       })
     },
     saveModel: function(data) {
