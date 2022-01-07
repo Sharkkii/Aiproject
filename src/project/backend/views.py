@@ -96,44 +96,37 @@ def deleteTask(request):
 @api_view(["POST"])
 def initializeModel(request):
 
+    global n_slot
+    global n_worker
     global model
+    global job_scheduler
 
     queryset = RlAgentModel.objects.filter(pk=request.data["name"])
+    n_slot = int(request.data["n_slot"])
+    n_worker = int(request.data["n_worker"])
 
     if (not queryset.exists()):
+
+        job_scheduler = JobScheduler(
+            n_slot = n_slot,
+            n_worker = n_worker
+        )
+        job_scheduler.setup()
+
         model["name"] = request.data["name"]
         model["status"] = ModelStatus.NEW
         status = Status.SUCCESS
+
     else:
         status = Status.FAIL
 
     data = {
         "model_name": model["name"],
+        "n_slot": n_slot,
+        "n_worker": n_worker,
         "status": status,
         "model_status": model["status"]
     }   
-    response = JsonResponse(data)
-    return response
-
-@api_view(["POST"])
-def setupModel(request):
-
-    global n_slot
-    global n_worker
-    global job_scheduler
-
-    n_slot = request.data["n_slot"]
-    n_worker = request.data["n_worker"]
-    job_scheduler = JobScheduler(
-        n_slot = n_slot,
-        n_worker = n_worker
-    )
-    job_scheduler.setup()
-    
-    data = {
-        "n_slot": n_slot,
-        "n_worker": n_worker
-    }
     response = JsonResponse(data)
     return response
 
@@ -158,8 +151,8 @@ def trainModel(request):
     if (job_scheduler is not None):
         job_scheduler.train(
             n_epoch = n_epoch,
-            n_train_eval = n_train_eval,
-            n_test_eval = n_test_eval,
+            n_train_eval = 1,
+            n_test_eval = 1,
             env_step = 1
         )
         train_score, test_score = job_scheduler.controller.evaluate(
@@ -225,6 +218,8 @@ def loadModel(request):
     
     data = {
         "model_name": model["name"],
+        "n_slot": n_slot,
+        "n_worker": n_worker,
         "status": status,
         "model_status": model["status"]
     }

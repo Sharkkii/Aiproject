@@ -4,25 +4,25 @@
     <div class="items">
       <div class="item">
         <label>
+          <p>n_total_epoch</p>
+          <div><input type="number" v-model="nTotalEpoch" disabled></div>
+        </label>
+      </div>
+      <div class="item">
+        <label>
           <p>n_epoch</p>
-          <div><input type="text" v-model="nEpoch"></div>
+          <div><input type="number" v-model="nEpoch"></div>
         </label>
       </div>
       <div class="item">
         <label>
-          <p>n_train_eval</p>
-          <div><input type="text" v-model="nTrainEval"></div>
-        </label>
-      </div>
-      <div class="item">
-        <label>
-          <p>n_test_eval</p>
-          <div><input type="text" v-model="nTestEval"></div>
+          <p>n_eval</p>
+          <div><input type="number" v-model="nEval"></div>
         </label>
       </div>
       <div class="item">
         <button type="submit">
-          <p>Train Model</p>
+          <p>Train</p>
         </button>
       </div>
     </div>
@@ -62,9 +62,9 @@ export default {
   name: "VModelTrainButton",
   data: function() {
     return {
-      nEpoch: 100,
-      nTrainEval: 5,
-      nTestEval: 5
+      nTotalEpoch: null,
+      nEpoch: null,
+      nEval: null,
     }
   },
   methods: {
@@ -74,8 +74,8 @@ export default {
     submit: function() {
       this.trainModel({
         n_epoch: this.nEpoch,
-        n_train_eval: this.nTrainEval,
-        n_test_eval: this.nTestEval
+        n_train_eval: this.nEval,
+        n_test_eval: this.nEval
       })
     }
   }
