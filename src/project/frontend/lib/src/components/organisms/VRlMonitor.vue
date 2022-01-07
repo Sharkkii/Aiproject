@@ -3,7 +3,11 @@
   <div class="sub-header">
     <p>RL Monitor</p>
   </div>
-  <div>
+  <div class="chart">
+    <v-chart>
+    </v-chart>
+  </div>
+  <div class="table">
     <table>
       <tr>
         <td>model name</td>
@@ -70,6 +74,7 @@ td {
 </style>
 
 <script>
+import VChart from "../molecules/VChart.vue"
 export default {
   name: "VRlMonitor",
   props: {
@@ -91,6 +96,9 @@ export default {
         return {}
       }
     }
+  },
+  components: {
+    VChart
   }
 }
 </script>
