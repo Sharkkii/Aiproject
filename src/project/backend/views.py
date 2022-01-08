@@ -53,17 +53,12 @@ def getReferenceTaskList(request):
 @api_view(["POST"])
 def createReferenceTask(request):
     
-    task_name = request.data["name"]
-    created_at = timezone.now().date()
-    overdue_at = datetime.date.fromisoformat(request.data["remaining_time"])
-    required_effort = request.data["required_effort"]
-    
     ReferenceTaskModel.objects.create(
-        name = task_name,
-        created_at = created_at,
-        overdue_at = overdue_at,
-        remaining_time = (overdue_at - created_at).days,
-        required_effort = required_effort
+        name = request.data["name"],
+        slot = request.data["slot"],
+        remaining_time = request.data["remaining_time"],
+        required_effort = request.data["required_effort"],
+        P = request.data["P"]
     )
     response = Response()
     return response
@@ -76,9 +71,7 @@ def createTask(request):
     
     TaskModel.objects.create(
         name = task.name,
-        created_at = task.created_at,
-        overdue_at = task.overdue_at,
-        remaining_time = (task.overdue_at - task.created_at).days,
+        remaining_time = task.remaining_time,
         required_effort = task.required_effort
     )
     response = Response()

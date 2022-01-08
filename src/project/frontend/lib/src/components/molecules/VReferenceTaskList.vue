@@ -5,16 +5,20 @@
       <thead>
         <tr>
           <th>Task Name</th>
+          <th>Slot</th>
           <th>Required Effort</th>
           <th>Remaining Time</th>
+          <th>Probability</th>
           <th></th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="referenceTask in referenceTaskList" v-bind:key="referenceTask.id">
             <td>{{ referenceTask.name }}</td>
+            <td>{{ referenceTask.slot }}</td>
             <td>{{ referenceTask.required_effort }}</td>
             <td>{{ referenceTask.remaining_time }}</td>
+            <td>{{ referenceTask.P }}</td>
             <td>
               <button type="submit" v-bind:name="referenceTask.name" v-bind:value="referenceTask.name" v-on:click="submit">Create</button>
             </td>

@@ -7,15 +7,13 @@ class TaskModel(models.Model):
     name = models.CharField(max_length = 20, primary_key = True)
     required_effort = models.FloatField()
     remaining_time = models.FloatField()
-    created_at = models.DateField(default=timezone.now)
-    overdue_at = models.DateField()
 
 class ReferenceTaskModel(models.Model):
     name = models.CharField(max_length = 20, primary_key = True)
+    slot = models.IntegerField()
     required_effort = models.FloatField()
     remaining_time = models.FloatField()
-    created_at = models.DateField(default=timezone.now)
-    overdue_at = models.DateField()
+    P = models.FloatField()
 
 class RlAgentModel(models.Model):
     name = models.CharField(max_length = 40, primary_key = True)

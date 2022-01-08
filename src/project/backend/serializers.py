@@ -4,12 +4,12 @@ from .models import TaskModel, ReferenceTaskModel, RlAgentModel
 class TaskListSerializer(serializers.ModelSerializer):
     class Meta:
         model = TaskModel
-        fields = ("name", "created_at", "overdue_at", "remaining_time", "required_effort")
+        fields = ("name", "remaining_time", "required_effort")
 
 class ReferenceTaskListSerializer(serializers.ModelSerializer):
     class Meta:
         model = ReferenceTaskModel
-        fields = ("name", "created_at", "overdue_at", "remaining_time", "required_effort")
+        fields = ("name", "slot", "remaining_time", "required_effort", "P")
 
 class RlAgentSerializer(serializers.ModelSerializer):
     class Meta:
