@@ -3,7 +3,7 @@
   <form method="POST" v-on:submit.prevent="submit">
     <div class="items">
       <div class="item">
-        <button type="submit">
+        <button type="submit" v-bind:disabled="disabled">
           <p>Save Model</p>
         </button>
       </div>
@@ -44,7 +44,14 @@ export default {
   name: "VModelSaveButton",
   data: function() {
     return {
-      name: ""
+      name: "",
+      disabled: true
+    }
+  },
+  props: {
+    status: {
+      type: String,
+      default: "NG"
     }
   },
   methods: {
@@ -55,6 +62,15 @@ export default {
       this.saveModel({
         name: this.name
       })
+    }
+  },
+  watch: {
+    status: function() {
+      if (this.status == "OK") {
+        this.disabled = false
+      } else if (this.status == "NG") {
+        this.disabled = true
+      }
     }
   }
 }

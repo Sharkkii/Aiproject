@@ -21,7 +21,7 @@
         </label>
       </div>
       <div class="item">
-        <button type="submit">
+        <button type="submit" v-bind:disabled="disabled">
           <p>Train</p>
         </button>
       </div>
@@ -65,6 +65,13 @@ export default {
       nTotalEpoch: null,
       nEpoch: null,
       nEval: null,
+      disabled: true
+    }
+  },
+  props: {
+    status: {
+      type: String,
+      default: "NG"
     }
   },
   methods: {
@@ -77,6 +84,15 @@ export default {
         n_train_eval: this.nEval,
         n_test_eval: this.nEval
       })
+    }
+  },
+  watch: {
+    status: function() {
+      if (this.status == "OK") {
+        this.disabled = false
+      } else if (this.status == "NG") {
+        this.disabled = true
+      }
     }
   }
 }

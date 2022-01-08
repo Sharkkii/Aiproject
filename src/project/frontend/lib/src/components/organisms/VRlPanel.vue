@@ -24,15 +24,15 @@
           </button>
         </div>
       </div>
-      <div class="tab train" v-if="checked.train">
+      <div class="tab train" v-show="checked.train">
         <v-model-init-button v-on:initialize-model="initializeModel">
         </v-model-init-button>
-        <v-model-train-button v-on:train-model="trainModel">
+        <v-model-train-button v-on:train-model="trainModel" v-bind:status="status.train">
         </v-model-train-button>
-        <v-model-save-button v-on:save-model="saveModel">
+        <v-model-save-button v-on:save-model="saveModel" v-bind:status="status.save">
         </v-model-save-button>
       </div>
-      <div class="tab test" v-if="checked.test">
+      <div class="tab test" v-show="checked.test">
         <v-model-load-button v-on:load-model="loadModel">
         </v-model-load-button>
       </div>
@@ -90,11 +90,22 @@ export default {
     VModelLoadButton,
     VModelSaveButton
   },
-  data: function () {
+  data: function() {
     return {
       checked: {
         train: true,
         test: false
+      }
+    }
+  },
+  props: {
+    status: {
+      type: Object,
+      default: function() {
+        return {
+          train: "NG",
+          save: "NG"
+        }
       }
     }
   },

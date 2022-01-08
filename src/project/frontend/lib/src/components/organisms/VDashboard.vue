@@ -15,6 +15,7 @@
           v-on:train-model="trainModel"
           v-on:save-model="saveModel"
           v-on:load-model="loadModel"
+          v-bind:status="status"
         >
         </v-rl-panel>
       </div>
@@ -92,7 +93,11 @@ export default {
       scheduleList: {},
       modelInformation: {},
       modelConfiguration: {},
-      modelScore: {}
+      modelScore: {},
+      status: {
+        train: "NG",
+        save: "NG"
+      }
     }
   },
   methods: {
@@ -154,6 +159,10 @@ export default {
     },
     initializeModel: function(data) {
       let self = this
+      self.status = {
+        train: "NG",
+        save: "NG"
+      }
       axios.defaults.xsrfCookieName = "csrftoken"
       axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
       axios
@@ -175,13 +184,21 @@ export default {
         self.modelInformation = newModelInformation
         self.modelConfiguration = newModelConfiguration
 
-        status = response.data["status"]
-        console.log("initialize-model", status)
+        self.status = {
+          train: "OK",
+          save: "OK"
+        }
+        console.log("initialize-model", response.data["status"])
 
       })
     },
     trainModel: function(data) {
       let self = this
+      self.status = {
+        train: "NG",
+        save: "NG"
+      }
+
       axios.defaults.xsrfCookieName = "csrftoken"
       axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
       axios
@@ -210,8 +227,11 @@ export default {
         self.modelConfiguration = newModelConfiguration
         self.modelScore = newModelScore
 
-        status = response.data["status"]
-        console.log("train-model", status)
+        self.status = {
+          train: "OK",
+          save: "OK"
+        }
+        console.log("train-model", response.data["status"])
       })
     },
     saveModel: function(data) {
@@ -234,11 +254,16 @@ export default {
     },
     loadModel: function(data) {
       let self = this
+      self.status = {
+        train: "NG",
+        save: "NG"
+      }
       axios.defaults.xsrfCookieName = "csrftoken"
       axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
       axios
       .post("load-model", data)
       .then(function(response) {
+
         let oldData = Object.assign({}, self.modelInformation)
         let newData = Object.assign(oldData, {
           modelName: response.data["model_name"],
@@ -246,8 +271,11 @@ export default {
         })
         self.modelInformation = newData
 
-        status = response.data["status"]
-        console.log("load-model", status)
+        self.status = {
+          train: "OK",
+          save: "NG"
+        }
+        console.log("load-model", response.data["status"])
       })
     }
   },
