@@ -10,6 +10,7 @@
           <th>Remaining Time</th>
           <th>Probability</th>
           <th></th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
@@ -20,7 +21,22 @@
             <td>{{ referenceTask.remaining_time }}</td>
             <td>{{ referenceTask.P }}</td>
             <td>
-              <button type="submit" v-bind:name="referenceTask.name" v-bind:value="referenceTask.name" v-on:click="submit">Create</button>
+              <button
+                type="submit"
+                v-bind:name="referenceTask.name"
+                v-bind:value="referenceTask.name"
+                v-on:click="deleteReferenceTask"
+              >
+                Delete
+              </button>
+            </td>
+            <td>
+              <button
+                type="submit"
+                v-bind:name="referenceTask.name" v-bind:value="referenceTask.name" v-on:click="createTask"
+              >
+                Create
+              </button>
             </td>
         </tr>
       </tbody>
@@ -50,10 +66,15 @@ export default {
     }
   },
   methods: {
-    nop: function() {},
-    submit: function(event) {
+    createTask: function(event) {
       let name = event.target.name
       this.$emit("create-task", {
+        name: name
+      })
+    },
+    deleteReferenceTask: function(event) {
+      let name = event.target.name
+      this.$emit("delete-reference-task", {
         name: name
       })
     }

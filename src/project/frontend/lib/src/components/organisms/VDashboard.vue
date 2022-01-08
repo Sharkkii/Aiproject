@@ -3,7 +3,13 @@
   <div id="v-dashboard">
     <div class="float-left">
       <div class="v-task-panel">
-        <v-task-panel v-on:create-task="createTask"  v-on:create-reference-task="createReferenceTask" v-bind:reference-task-list="referenceTaskList"></v-task-panel>
+        <v-task-panel
+          v-bind:reference-task-list="referenceTaskList"
+          v-on:create-task="createTask"
+          v-on:delete-reference-task="deleteReferenceTask"
+          v-on:create-reference-task="createReferenceTask"
+        >
+        </v-task-panel>
       </div>
       <div class="v-schedule-panel">
         <v-schedule-panel v-on:get-best-schedule="getBestSchedule">
@@ -145,6 +151,16 @@ export default {
       .post("delete-task", data)
       .then(function(response) {
         self.getTaskList()
+      })
+    },
+    deleteReferenceTask: function(data) {
+      let self = this
+      axios.defaults.xsrfCookieName = "csrftoken"
+      axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
+      axios
+      .post("delete-reference-task", data)
+      .then(function(response) {
+        self.getReferenceTaskList()
       })
     },
     getBestSchedule: function(data) {

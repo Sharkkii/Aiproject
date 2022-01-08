@@ -16,7 +16,14 @@
             <td>{{ task.required_effort }}</td>
             <td>{{ task.remaining_time }}</td>
             <td>
-              <button type="submit" v-bind:name="task.name" v-bind:value="task.name" v-on:click="submit">Delete</button>
+              <button
+                type="submit"
+                v-bind:name="task.name"
+                v-bind:value="task.name"
+                v-on:click="submit"
+              >
+                Delete
+              </button>
             </td>
           </tr>
         </tbody>

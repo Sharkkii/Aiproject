@@ -69,14 +69,22 @@ def createReferenceTask(request):
 @api_view(["POST"])
 def createTask(request):
     
-    name = request.data["name"]
-    task = ReferenceTaskModel.objects.get(pk=name)
+    task = ReferenceTaskModel.objects.get(pk=request.data["name"])
     
     TaskModel.objects.create(
         name = task.name,
         remaining_time = task.remaining_time,
         required_effort = task.required_effort
     )
+    response = Response()
+    return response
+
+@api_view(["POST"])
+def deleteReferenceTask(request):
+
+    name = request.data["name"]
+    task = ReferenceTaskModel.objects.get(pk=name)
+    task.delete()
     response = Response()
     return response
 

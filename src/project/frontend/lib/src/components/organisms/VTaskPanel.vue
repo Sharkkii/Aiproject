@@ -3,9 +3,15 @@
   <div class="sub-header">
     <p>Task Panel</p>
   </div>
-  <v-reference-task-list v-bind:reference-task-list="referenceTaskList" v-on:create-task="createTask">
+  <v-reference-task-list
+    v-bind:reference-task-list="referenceTaskList"
+    v-on:create-task="createTask"
+    v-on:delete-reference-task="deleteReferenceTask"
+  >
   </v-reference-task-list>
-  <v-reference-task-create-button v-on:create-reference-task="createReferenceTask">
+  <v-reference-task-create-button
+    v-on:create-reference-task="createReferenceTask"
+  >
   </v-reference-task-create-button>
 </div>
 </template>
@@ -37,11 +43,14 @@ export default {
     }
   },
   methods: {
+    createReferenceTask: function(data) {
+      this.$emit("create-reference-task", data)
+    },
     createTask: function(data) {
       this.$emit("create-task", data)
     },
-    createReferenceTask: function(data) {
-      this.$emit("create-reference-task", data)
+    deleteReferenceTask: function(data) {
+      this.$emit("delete-reference-task", data)
     }
   },
   components: {
