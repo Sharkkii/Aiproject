@@ -11,11 +11,11 @@
     <table>
       <tr>
         <td>env_name</td>
-        <td>{{ modelInformation.envName }}</td>
+        <td>{{ this.envName }}</td>
       </tr>
       <tr>
         <td>agent_name</td>
-        <td>{{ modelInformation.agentName }} ( {{ modelInformation.agentStatus }} )</td>
+        <td>{{ this.agentName }}</td>
       </tr>
       <tr>
         <td>n_slot</td>
@@ -58,12 +58,16 @@
 
 td {
   font-size: 20px;
-  height: 40px;
-  line-height: 40px;
-  width: 160px;
+  height: 50px;
+  line-height: 50px;
+  width: 200px;
 
   &:first-child {
     font-weight: bold;
+  }
+
+  &:second-child {
+    font-weight: normal;
   }
 }
 </style>
@@ -89,6 +93,20 @@ export default {
       type: Object,
       default: function() {
         return {}
+      }
+    }
+  },
+  computed: {
+    envName: function() {
+      return this.modelInformation.envName
+    },
+    agentName: function() {
+      let name = this.modelInformation.agentName
+      let status = this.modelInformation.agentStatus
+      if (name) {
+        return `${name} (${status})`
+      } else {
+        return ""
       }
     }
   },

@@ -66,6 +66,7 @@ export default {
     }
   },
   methods: {
+    nop: function() {},
     createTask: function(event) {
       let name = event.target.name
       this.$emit("create-task", {

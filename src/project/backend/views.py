@@ -112,6 +112,7 @@ def initializeModel(request):
     n_slot = int(request.data["n_slot"])
     n_worker = int(request.data["n_worker"])
     env_name = request.data["name"]
+    agent_name = ""
 
     queryset = RlAgentModel.objects.filter(pk=env_name)
     data = pd.DataFrame(ReferenceTaskModel.objects.all().values())
@@ -291,7 +292,7 @@ def saveModel(request):
         )
         status = Status.SUCCESS
         
-    elif ((not queryset.exists()) and (agent_status == ModelStatus.NEW)):
+    else:
         RlAgentModel.objects.create(
             name = agent_name,
             n_slot = n_slot,
@@ -305,12 +306,6 @@ def saveModel(request):
         )
         agent_status = ModelStatus.COMMITTED
         status = Status.SUCCESS
-
-    elif (agent_status == ModelStatus.COMMITTED):
-        status = Status.SUCCESS
-
-    else:
-        status = Status.FAIL
     
     data = {
         "env_name": env_name,
