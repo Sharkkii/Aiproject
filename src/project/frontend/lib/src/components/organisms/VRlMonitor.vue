@@ -4,7 +4,7 @@
     <p>RL Monitor</p>
   </div>
   <div class="chart">
-    <v-chart>
+    <v-chart v-bind:covered="modelScore.covered" v-bind:missed="modelScore.missed">
     </v-chart>
   </div>
   <div class="table">
@@ -32,14 +32,6 @@
       <tr>
         <td>n_test_eval</td>
         <td>{{ modelConfiguration.nTestEval }}</td>
-      </tr>
-      <tr>
-        <td>covered</td>
-        <td>{{ modelScore.covered }}</td>
-      </tr>
-      <tr>
-        <td>missed</td>
-        <td>{{ modelScore.missed }}</td>
       </tr>
     </table>
   </div>

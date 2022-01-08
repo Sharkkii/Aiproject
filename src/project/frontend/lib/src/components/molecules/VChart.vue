@@ -17,17 +17,63 @@
 import Chart from "chart.js"
 export default {
   name: "VChart",
+  props: {
+    covered: {
+      type: Array,
+      default: function() {
+        return []
+      }
+    },
+    missed: {
+      type: Array,
+      default: function() {
+        return []
+      }
+    }
+  },
+  computed: {
+    watched: function() {
+      return this.covered, this.missed
+    }
+  },
   methods: {
+    getData: function(data) {
+      return data
+    },
+    getLabels: function(data) {
+      let n = data.length
+      let labels = new Array(n)
+      for (let i=0; i<n; i++) { labels[i] = i.toString() }
+      return labels;
+    },
     renderChart: function() {
 
       // data & labels
-      let labels = [ "1", "2", "3", "4" ]
+      let coverRateData = this.getData(this.covered)
+      let missRateData = this.getData(this.missed)
+      let datasets = [
+        {
+          label: "covered",
+          data: coverRateData,
+          borderColor: "rgba(19, 170, 152, 0.5)",
+          borderWidth: 5,
+          fill: false,
+          lineTension: 0,
+        },
+        {
+          label: "missed",
+          data: missRateData,
+          borderColor: "rgba(205, 56, 75, 0.5)",
+          borderWidth: 5,
+          fill: false,
+          lineTension: 0,
+        }
+      ]
+
+      let labels = this.getLabels(coverRateData)
       let data = {
         labels: labels,
-        datasets: [{
-          label: "data label",
-          data: [ 1, 2, 3, 4 ]
-        }]
+        datasets: datasets
       }
 
       // configurations
@@ -45,6 +91,11 @@ export default {
       )
 
     },
+  },
+  watch: {
+    watched: function() {
+      this.renderChart()
+    }
   },
   mounted: function() {
     this.renderChart()
