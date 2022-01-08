@@ -3,8 +3,8 @@
   <div class="sub-header">
     <p>Schedule Panel</p>
   </div>
-  <v-job-schedule-button v-on:get-best-schedule="getBestSchedule">
-  </v-job-schedule-button>
+  <v-schedule-button v-on:get-best-schedule="getBestSchedule">
+  </v-schedule-button>
 </div>
 </template>
 
@@ -24,11 +24,11 @@
 </style>
 
 <script>
-import VJobScheduleButton from "../molecules/VScheduleButton.vue"
+import VScheduleButton from "../molecules/VScheduleButton.vue"
 export default {
   name: "VSchedulePanel",
   components: {
-    VJobScheduleButton
+    VScheduleButton
   },
   methods: {
     getBestSchedule: function(data) {

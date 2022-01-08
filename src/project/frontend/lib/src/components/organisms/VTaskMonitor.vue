@@ -14,7 +14,6 @@
 #v-task-monitor {
   box-shadow: 0 0 5px $black;
   box-sizing: border-box;
-  min-height: 400px;
   padding: 20px;
   width: 600px;
 }

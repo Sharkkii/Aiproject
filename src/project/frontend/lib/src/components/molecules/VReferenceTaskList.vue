@@ -4,7 +4,7 @@
     <table>
       <thead>
         <tr>
-          <th>Task Name</th>
+          <th>Name</th>
           <th>Slot</th>
           <th>Required Effort</th>
           <th>Remaining Time</th>
