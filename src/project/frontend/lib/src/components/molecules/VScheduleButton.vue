@@ -1,38 +1,49 @@
 <template>
 <div id="v-schedule-button">
   <form method="POST" v-on:submit.prevent="submit">
-    <div class="item">
-      <label>
-        <p>Step</p>
-        <div><input type="number" v-model="nStep"></div>
-      </label>
-    </div>
-    <div class="item">
-      <label>
-        <p>Sample</p>
-        <div><input type="number" v-model="nSample"></div>
-      </label>
-    </div>
-    <div class="item">
-      <button type="submit">
-        <p>Try Job-Scheduling</p>
-      </button>
+    <div class="items">
+      <div class="item">
+        <label>
+          <p>Step</p>
+          <div><input type="number" v-model="nStep"></div>
+        </label>
+      </div>
+      <div class="item">
+        <label>
+          <p>Sample</p>
+          <div><input type="number" v-model="nSample"></div>
+        </label>
+      </div>
+      <div class="item">
+        <button type="submit">
+          <p>Try Scheduling</p>
+        </button>
+      </div>
     </div>
   </form>
 </div>
 </template>
 
 <style scoped lang="scss">
+.items {
+  display: flex;
+  align-items: flex-end;
+  height: 100px;
+}
+
 .item {
-  margin-top: 10px;
+
+  width: 33.3%;
 
   input {
+    box-sizing: border-box;
     font-size: 20px;
     height: 50px;
     width: 100%;
   }
 
   button {
+    box-sizing: border-box;
     font-size: 20px;
     height: 50px;
     width: 100%;
