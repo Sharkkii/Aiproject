@@ -12,7 +12,6 @@
       <div class="v-rl-panel">
         <v-rl-panel
           v-on:initialize-model="initializeModel"
-          v-on:setup-model="setupModel"
           v-on:train-model="trainModel"
           v-on:save-model="saveModel"
           v-on:load-model="loadModel"
@@ -160,30 +159,25 @@ export default {
       axios
       .post("initialize-model", data)
       .then(function(response) {
-        let oldData = Object.assign({}, self.modelInformation)
-        let newData = Object.assign(oldData, {
+        
+        let oldModelInformation = Object.assign({}, self.modelInformation)
+        let oldModelConfiguration = Object.assign({}, self.modelConfiguration)
+
+        let newModelInformation = Object.assign(oldModelInformation, {
           modelName: response.data["model_name"],
           modelStatus: response.data["model_status"]
         })
-        self.modelInformation = newData
-
-        status = response.data["status"]
-        console.log("initialize-model", status)
-      })
-    },
-    setupModel: function(data) {
-      let self = this
-      axios.defaults.xsrfCookieName = "csrftoken"
-      axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
-      axios
-      .post("setup-model", data)
-      .then(function(response) {
-        let oldData = Object.assign({}, self.modelConfiguration)
-        let newData = Object.assign(oldData, {
+        let newModelConfiguration = Object.assign(oldModelConfiguration, {
           nSlot: response.data["n_slot"],
           nWorker: response.data["n_worker"]
         })
-        self.modelConfiguration = newData
+
+        self.modelInformation = newModelInformation
+        self.modelConfiguration = newModelConfiguration
+
+        status = response.data["status"]
+        console.log("initialize-model", status)
+
       })
     },
     trainModel: function(data) {

@@ -9,8 +9,20 @@
         </label>
       </div>
       <div class="item">
+        <label>
+          <p>n_slot</p>
+          <div><input type="number" v-model="nSlot"></div>
+        </label>
+      </div>
+      <div class="item">
+        <label>
+          <p>n_worker</p>
+          <div><input type="number" v-model="nWorker"></div>
+        </label>
+      </div>
+      <div class="item">
         <button type="submit">
-          <p>Initialize Model</p>
+          <p>Initialize</p>
         </button>
       </div>
     </div>
@@ -50,7 +62,9 @@ export default {
   name: "VModelInitButton",
   data: function() {
     return {
-      name: ""
+      name: null,
+      nSlot: null,
+      nWorker: null
     }
   },
   methods: {
@@ -59,7 +73,9 @@ export default {
     },
     submit: function() {
       this.initializeModel({
-        name: this.name
+        name: this.name,
+        n_slot: this.nSlot,
+        n_worker: this.nWorker
       })
     }
   }

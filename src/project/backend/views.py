@@ -96,44 +96,37 @@ def deleteTask(request):
 @api_view(["POST"])
 def initializeModel(request):
 
+    global n_slot
+    global n_worker
     global model
+    global job_scheduler
 
     queryset = RlAgentModel.objects.filter(pk=request.data["name"])
+    n_slot = int(request.data["n_slot"])
+    n_worker = int(request.data["n_worker"])
 
     if (not queryset.exists()):
+
+        job_scheduler = JobScheduler(
+            n_slot = n_slot,
+            n_worker = n_worker
+        )
+        job_scheduler.setup()
+
         model["name"] = request.data["name"]
         model["status"] = ModelStatus.NEW
         status = Status.SUCCESS
+
     else:
         status = Status.FAIL
 
     data = {
         "model_name": model["name"],
+        "n_slot": n_slot,
+        "n_worker": n_worker,
         "status": status,
         "model_status": model["status"]
     }   
-    response = JsonResponse(data)
-    return response
-
-@api_view(["POST"])
-def setupModel(request):
-
-    global n_slot
-    global n_worker
-    global job_scheduler
-
-    n_slot = request.data["n_slot"]
-    n_worker = request.data["n_worker"]
-    job_scheduler = JobScheduler(
-        n_slot = n_slot,
-        n_worker = n_worker
-    )
-    job_scheduler.setup()
-    
-    data = {
-        "n_slot": n_slot,
-        "n_worker": n_worker
-    }
     response = JsonResponse(data)
     return response
 
@@ -151,23 +144,23 @@ def trainModel(request):
     n_test_eval = int(request.data["n_test_eval"])
 
     score = {
-        "covered": -1,
-        "missed": -1
+        "covered":[],
+        "missed": []
     }
 
     if (job_scheduler is not None):
-        job_scheduler.train(
+        train_score, test_score = job_scheduler.train(
             n_epoch = n_epoch,
             n_train_eval = n_train_eval,
             n_test_eval = n_test_eval,
-            env_step = 1
+            env_step = 1,
+            dataset_size = 1000,
+            batch_size = 100,
+            return_score = True
         )
-        train_score, test_score = job_scheduler.controller.evaluate(
-            n_train_eval = n_train_eval,
-            n_test_eval = n_test_eval
-        )
-        score["covered"] = np.mean(test_score["covered"])
-        score["missed"] = np.mean(test_score["missed"])
+
+        score["covered"] = [ np.mean(score) for score in test_score["covered"] ]
+        score["missed"] = [ np.mean(score) for score in test_score["missed"] ]
         
         if (model["status"] == ModelStatus.COMMITTED):
             model["status"] = ModelStatus.MODIFIED
@@ -225,6 +218,8 @@ def loadModel(request):
     
     data = {
         "model_name": model["name"],
+        "n_slot": n_slot,
+        "n_worker": n_worker,
         "status": status,
         "model_status": model["status"]
     }

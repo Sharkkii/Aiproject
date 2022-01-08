@@ -76,10 +76,11 @@ class JobScheduler:
         *args,
         **kwargs
     ):
-        self.controller.fit(
+        ret = self.controller.fit(
             *args,
             **kwargs
         )
+        return ret
 
     def save(
         self,

@@ -10,7 +10,7 @@
       </div>
       <div class="item">
         <button type="submit">
-          <p>Load Model</p>
+          <p>Load</p>
         </button>
       </div>
     </div>
