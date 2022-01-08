@@ -3,8 +3,14 @@
   <form method="POST" v-on:submit.prevent="submit">
     <div class="items">
       <div class="item">
+        <label>
+          <p>agent_name</p>
+          <div><input type="text" v-model="agentName"></div>
+        </label>
+      </div>
+      <div class="item">
         <button type="submit" v-bind:disabled="disabled">
-          <p>Save Model</p>
+          <p>Save</p>
         </button>
       </div>
     </div>
@@ -44,7 +50,7 @@ export default {
   name: "VModelSaveButton",
   data: function() {
     return {
-      name: "",
+      agentName: null,
       disabled: true
     }
   },
@@ -60,7 +66,7 @@ export default {
     },
     submit: function() {
       this.saveModel({
-        name: this.name
+        name: this.agentName
       })
     }
   },

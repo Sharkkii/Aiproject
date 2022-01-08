@@ -19,4 +19,4 @@ class RlAgentModel(models.Model):
     name = models.CharField(max_length = 40, primary_key = True)
     n_slot = models.IntegerField()
     n_worker = models.IntegerField()
-    env_name = models.CharField(max_length = 40, blank = True, null = True)
+    env_name = models.CharField(max_length = 40)

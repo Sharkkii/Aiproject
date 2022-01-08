@@ -189,8 +189,9 @@ export default {
         let oldModelConfiguration = Object.assign({}, self.modelConfiguration)
 
         let newModelInformation = Object.assign(oldModelInformation, {
-          modelName: response.data["model_name"],
-          modelStatus: response.data["model_status"]
+          envName: response.data["env_name"],
+          agentName: response.data["agent_name"],
+          agentStatus: response.data["agent_status"]
         })
         let newModelConfiguration = Object.assign(oldModelConfiguration, {
           nSlot: response.data["n_slot"],
@@ -226,8 +227,9 @@ export default {
         let oldModelScore = Object.assign({}, self.modelScore)
 
         let newModelInformation = Object.assign(oldModelInformation, {
-          modelName: response.data["model_name"],
-          modelStatus: response.data["model_status"]
+          envName: response.data["env_name"],
+          agentName: response.data["agent_name"],
+          agentStatus: response.data["agent_status"]
         })
         let newModelConfiguration = Object.assign(oldModelConfiguration, {
           nEpoch: response.data["n_epoch"],
@@ -259,8 +261,8 @@ export default {
       .then(function(response) {
         let oldData = Object.assign({}, self.modelInformation)
         let newData = Object.assign(oldData, {
-          modelName: response.data["model_name"],
-          modelStatus: response.data["model_status"]
+          agentName: response.data["agent_name"],
+          agentStatus: response.data["agent_status"]
         })
         self.modelInformation = newData
 
@@ -282,8 +284,9 @@ export default {
 
         let oldData = Object.assign({}, self.modelInformation)
         let newData = Object.assign(oldData, {
-          modelName: response.data["model_name"],
-          modelStatus: response.data["model_status"]
+          envName: response.data["env_name"],
+          agentName: response.data["agent_name"],
+          agentStatus: response.data["agent_status"]
         })
         self.modelInformation = newData
 

@@ -10,8 +10,12 @@
   <div class="table">
     <table>
       <tr>
-        <td>model name</td>
-        <td>{{ modelInformation.modelName }} ( {{ modelInformation.modelStatus }} )</td>
+        <td>env_name</td>
+        <td>{{ modelInformation.envName }}</td>
+      </tr>
+      <tr>
+        <td>agent_name</td>
+        <td>{{ modelInformation.agentName }} ( {{ modelInformation.agentStatus }} )</td>
       </tr>
       <tr>
         <td>n_slot</td>

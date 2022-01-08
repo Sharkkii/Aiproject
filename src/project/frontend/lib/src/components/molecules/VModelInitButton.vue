@@ -4,8 +4,8 @@
     <div class="items">
       <div class="item">
         <label>
-          <p>Model Name</p>
-          <div><input type="text" v-model="name"></div>
+          <p>env_name</p>
+          <div><input type="text" v-model="envName"></div>
         </label>
       </div>
       <div class="item">
@@ -62,7 +62,7 @@ export default {
   name: "VModelInitButton",
   data: function() {
     return {
-      name: null,
+      envName: null,
       nSlot: null,
       nWorker: null
     }
@@ -73,7 +73,7 @@ export default {
     },
     submit: function() {
       this.initializeModel({
-        name: this.name,
+        name: this.envName,
         n_slot: this.nSlot,
         n_worker: this.nWorker
       })

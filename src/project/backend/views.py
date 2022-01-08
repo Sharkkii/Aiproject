@@ -26,10 +26,9 @@ class ModelStatus(str, Enum):
     MODIFIED = "modified"
     COMMITTED = "committed"
 
-model = {
-    "name": "",
-    "status": ModelStatus.NONE
-}
+env_name = ""
+agent_name = ""
+agent_status = ModelStatus.NONE
 n_slot = -1
 n_worker = -1
 n_epoch = -1
@@ -102,15 +101,21 @@ def initializeModel(request):
 
     global n_slot
     global n_worker
-    global model
+    global n_epoch
+    global n_train_eval
+    global n_test_eval
+    global env_name
+    global agent_name
+    global agent_status
     global job_scheduler
 
-    queryset = RlAgentModel.objects.filter(pk=request.data["name"])
     n_slot = int(request.data["n_slot"])
     n_worker = int(request.data["n_worker"])
+    env_name = request.data["name"]
 
+    queryset = RlAgentModel.objects.filter(pk=env_name)
     data = pd.DataFrame(ReferenceTaskModel.objects.all().values())
-    env_name = "default"
+
     ext = ".csv"
     path = os.path.join(PATH_TO_ENV_CONFIG, env_name) + ext
     data.to_csv(path, index=False)
@@ -125,19 +130,19 @@ def initializeModel(request):
             env_name = env_name
         )
 
-        model["name"] = request.data["name"]
-        model["status"] = ModelStatus.NEW
+        agent_status = ModelStatus.NEW
         status = Status.SUCCESS
 
     else:
         status = Status.FAIL
 
     data = {
-        "model_name": model["name"],
         "n_slot": n_slot,
         "n_worker": n_worker,
+        "env_name": env_name,
+        "agent_name": agent_name,
+        "agent_status": agent_status,
         "status": status,
-        "model_status": model["status"]
     }   
     response = JsonResponse(data)
     return response
@@ -145,10 +150,14 @@ def initializeModel(request):
 @api_view(["POST"])
 def trainModel(request):
 
+    global n_slot
+    global n_worker
     global n_epoch
     global n_train_eval
     global n_test_eval
-    global model
+    global env_name
+    global agent_name
+    global agent_status
     global job_scheduler
 
     n_epoch = int(request.data["n_epoch"])
@@ -166,7 +175,7 @@ def trainModel(request):
             n_train_eval = n_train_eval,
             n_test_eval = n_test_eval,
             env_step = 1,
-            dataset_size = 1000,
+            dataset_size = 10000,
             batch_size = 100,
             return_score = True
         )
@@ -174,8 +183,8 @@ def trainModel(request):
         score["covered"] = [ np.mean(score) for score in test_score["covered"] ]
         score["missed"] = [ np.mean(score) for score in test_score["missed"] ]
         
-        if (model["status"] == ModelStatus.COMMITTED):
-            model["status"] = ModelStatus.MODIFIED
+        if (agent_status == ModelStatus.COMMITTED):
+            agent_status = ModelStatus.MODIFIED
         status = Status.SUCCESS
     
     else:
@@ -187,9 +196,10 @@ def trainModel(request):
         "n_test_eval": n_test_eval,
         "covered": score["covered"],
         "missed": score["missed"],
-        "model_name": model["name"],
+        "env_name": env_name,
+        "agent_name": agent_name,
+        "agent_status": agent_status,
         "status": status,
-        "model_status": model["status"]
     }
     response = JsonResponse(data)
     return response
@@ -199,43 +209,59 @@ def loadModel(request):
 
     global n_slot
     global n_worker
-    global model
+    global n_epoch
+    global n_train_eval
+    global n_test_eval
+    global env_name
+    global agent_name
+    global agent_status
     global job_scheduler
 
     queryset = RlAgentModel.objects.filter(pk=request.data["name"])
+
+    data = pd.DataFrame(ReferenceTaskModel.objects.all().values())
+    ext = ".csv"
+    path = os.path.join(PATH_TO_ENV_CONFIG, env_name) + ext
+    data.to_csv(path, index=False)
 
     if (queryset.exists()):
 
         entry = queryset.first()
         n_slot = entry.n_slot
         n_worker = entry.n_worker
+        env_name = entry.env_name
+        agent_name = request.data["name"]
+
         job_scheduler = JobScheduler(
             n_slot = n_slot,
             n_worker = n_worker
         )
-        job_scheduler.setup()
-
-        model["name"] = request.data["name"]
-        job_scheduler.load(
-            path_to_policy = "policy_" + model["name"],
-            path_to_value = "value_" + model["name"],
-            path_to_qvalue = "qvalue_" + model["name"]
+        job_scheduler.setup(
+            env_name = env_name
         )
 
-        model["status"] = ModelStatus.COMMITTED
+        job_scheduler.load(
+            path_to_policy = "policy_" + agent_name,
+            path_to_value = "value_" + agent_name,
+            path_to_qvalue = "qvalue_" + agent_name
+        )
+
+        agent_status = ModelStatus.COMMITTED
         status = Status.SUCCESS
 
     else:
         status = Status.FAIL
     
     data = {
-        "model_name": model["name"],
         "n_slot": n_slot,
         "n_worker": n_worker,
+        "env_name": env_name,
+        "agent_name": agent_name,
+        "agent_status": agent_status,
         "status": status,
-        "model_status": model["status"]
     }
     response = JsonResponse(data)
+    print(data)
     return response
 
 @api_view(["POST"])
@@ -243,47 +269,54 @@ def saveModel(request):
 
     global n_slot
     global n_worker
-    global model
+    global n_epoch
+    global n_train_eval
+    global n_test_eval
+    global env_name
+    global agent_name
+    global agent_status
     global job_scheduler
 
-    queryset = RlAgentModel.objects.filter(pk=model["name"])
+    agent_name = request.data["name"]
+    queryset = RlAgentModel.objects.filter(pk=agent_name)
 
-    if (queryset.exists() and (model["status"] == ModelStatus.MODIFIED)):
+    if (queryset.exists() and (agent_status == ModelStatus.MODIFIED)):
         entry = queryset.first()
-        entry.model_status = model["status"] = ModelStatus.COMMITTED
+        entry.model_status = agent_status = ModelStatus.COMMITTED
         entry.save()
         job_scheduler.save(
-            path_to_policy = "policy_" + model["name"],
-            path_to_value = "value_" + model["name"],
-            path_to_qvalue = "qvalue_" + model["name"]
+            path_to_policy = "policy_" + agent_name,
+            path_to_value = "value_" + agent_name,
+            path_to_qvalue = "qvalue_" + agent_name
         )
         status = Status.SUCCESS
         
-    elif ((not queryset.exists()) and (model["status"] == ModelStatus.NEW)):
+    elif ((not queryset.exists()) and (agent_status == ModelStatus.NEW)):
         RlAgentModel.objects.create(
-            name = model["name"],
+            name = agent_name,
             n_slot = n_slot,
             n_worker = n_worker,
-            # env_name = ""
+            env_name = env_name
         )
         job_scheduler.save(
-            path_to_policy = "policy_" + model["name"],
-            path_to_value = "value_" + model["name"],
-            path_to_qvalue = "qvalue_" + model["name"]
+            path_to_policy = "policy_" + agent_name,
+            path_to_value = "value_" + agent_name,
+            path_to_qvalue = "qvalue_" + agent_name
         )
-        model["status"] = ModelStatus.COMMITTED
+        agent_status = ModelStatus.COMMITTED
         status = Status.SUCCESS
 
-    elif (model["status"] == ModelStatus.COMMITTED):
+    elif (agent_status == ModelStatus.COMMITTED):
         status = Status.SUCCESS
 
     else:
         status = Status.FAIL
     
     data = {
-        "model_name": model["name"],
+        "env_name": env_name,
+        "agent_name": agent_name,
+        "agent_status": agent_status,
         "status": status,
-        "model_status": model["status"]
     }
     response = JsonResponse(data)
     return response
@@ -295,12 +328,16 @@ def getBestSchedule(request):
 
     n_step = int(request.data["n_step"])
     n_sample = int(request.data["n_sample"])
-    schedules = job_scheduler.get_best_schedule(
-        n_step = n_step,
-        n_sample = n_sample
-    )
+    
+    if (job_scheduler is not None):
+        schedules = job_scheduler.get_best_schedule(
+            n_step = n_step,
+            n_sample = n_sample
+        )
+        data = pd.DataFrame(schedules).T
+        data = data.to_dict()
+    else:
+        data = {}
 
-    data = pd.DataFrame(schedules).T
-    data = data.to_dict()
     response = JsonResponse(data)
     return response
