@@ -16,9 +16,9 @@
         </div>
         <div class="index">
           <button
-            name="test"
-            v-on:click="toggle('test')"
-            v-bind:checked="checked.test"
+            name="usePretrained"
+            v-on:click="toggle('usePretrained')"
+            v-bind:checked="checked.usePretrained"
           >
             Use Pretrained Model
           </button>
@@ -27,15 +27,15 @@
       <div class="tab train" v-show="checked.train">
         <v-model-init-button v-on:initialize-model="initializeModel">
         </v-model-init-button>
-        <v-model-train-button v-on:train-model="trainModel" v-bind:status="status.train">
-        </v-model-train-button>
-        <v-model-save-button v-on:save-model="saveModel" v-bind:status="status.save">
-        </v-model-save-button>
       </div>
-      <div class="tab test" v-show="checked.test">
+      <div class="tab use-pretrained" v-show="checked.usePretrained">
         <v-model-load-button v-on:load-model="loadModel">
         </v-model-load-button>
       </div>
+      <v-model-train-button v-on:train-model="trainModel" v-bind:status="status.train">
+        </v-model-train-button>
+        <v-model-save-button v-on:save-model="saveModel" v-bind:status="status.save">
+        </v-model-save-button>
     </div>
   </div>
 </template>
@@ -93,7 +93,7 @@ export default {
     return {
       checked: {
         train: true,
-        test: false
+        usePretrained: false
       }
     }
   },

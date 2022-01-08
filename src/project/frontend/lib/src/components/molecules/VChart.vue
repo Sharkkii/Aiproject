@@ -89,7 +89,20 @@ export default {
       const config = {
         type: "line",
         data: data,
-        options: {}
+        options: {
+          scales: {
+            xAxes: [{
+              ticks: {
+                display: false
+              }
+            }],
+            yAxes: [{
+              ticks: {
+                min: 0, max: 1
+              }
+            }]
+          }
+        }
       }
       const ctx = document.getElementById("chart")
 
