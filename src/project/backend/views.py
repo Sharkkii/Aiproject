@@ -1,3 +1,4 @@
+import os
 import datetime
 from enum import Enum
 import numpy as np
@@ -8,7 +9,9 @@ from rest_framework.response import Response
 from .models import TaskModel, ReferenceTaskModel, RlAgentModel
 from .serializers import TaskListSerializer, ReferenceTaskListSerializer, RlAgentSerializer
 from django.http import JsonResponse
-from .src.scheduler import JobScheduler
+
+from backend.src.scheduler import JobScheduler
+from backend.src.env import PATH_TO_ENV_CONFIG
 
 # Create your views here.
 
@@ -98,13 +101,21 @@ def initializeModel(request):
     n_slot = int(request.data["n_slot"])
     n_worker = int(request.data["n_worker"])
 
+    data = pd.DataFrame(ReferenceTaskModel.objects.all().values())
+    env_name = "default"
+    ext = ".csv"
+    path = os.path.join(PATH_TO_ENV_CONFIG, env_name) + ext
+    data.to_csv(path, index=False)
+
     if (not queryset.exists()):
 
         job_scheduler = JobScheduler(
             n_slot = n_slot,
             n_worker = n_worker
         )
-        job_scheduler.setup()
+        job_scheduler.setup(
+            env_name = env_name
+        )
 
         model["name"] = request.data["name"]
         model["status"] = ModelStatus.NEW

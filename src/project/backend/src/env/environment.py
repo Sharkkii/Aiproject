@@ -6,6 +6,8 @@ import gym
 from ..task import Task
 from ..task import TaskManager
 
+PATH_TO_ENV_CONFIG = os.path.join(os.path.dirname(__file__), "config")
+
 class TaskEnvironment:
 
     def __init__(
@@ -45,9 +47,10 @@ class TaskEnvironment:
 
     def setup(
         self,
-        spec = "config/config.csv"
+        spec = "config"
     ):
-        path = os.path.abspath(os.path.join(os.path.dirname(__file__), spec))
+        ext = ".csv"
+        path = os.path.join(PATH_TO_ENV_CONFIG, spec) + ext
         df = pd.read_csv(path)
         for _, entry in df.iterrows():
             name = entry["name"]

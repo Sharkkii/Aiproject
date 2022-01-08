@@ -4,6 +4,7 @@ import os
 import torch
 
 from ..env import TaskEnvironment
+from ..env import PATH_TO_ENV_CONFIG
 from ..agent import TaskAgent
 from ..controller import TaskController
 
@@ -43,7 +44,8 @@ class JobScheduler:
         self.controller.reset()
 
     def setup(
-        self
+        self,
+        env_name = "config"
     ):
         d_observation = self.env.observation_space.low.size
         d_action = self.env.action_space.n
@@ -60,7 +62,9 @@ class JobScheduler:
         policy_optimizer = Optimizer(torch.optim.Adam, lr=1e-4)
         policy_network = PolicyNetwork(policy_network=policy_network)
     
-        self.env.setup()
+        self.env.setup(
+            spec = env_name
+        )
         self.agent.setup(
             self.env,
             policy_network = policy_network,
