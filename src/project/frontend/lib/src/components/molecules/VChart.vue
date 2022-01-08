@@ -17,6 +17,11 @@
 import Chart from "chart.js"
 export default {
   name: "VChart",
+  data: function() {
+    return {
+      chart: null
+    }
+  },
   props: {
     covered: {
       type: Array,
@@ -47,6 +52,10 @@ export default {
       return labels;
     },
     renderChart: function() {
+
+      if (this.chart) {
+        this.chart.destroy()
+      }
 
       // data & labels
       let coverRateData = this.getData(this.covered)
@@ -85,7 +94,7 @@ export default {
       const ctx = document.getElementById("chart")
 
       // chart
-      let chart = new Chart(
+      this.chart = new Chart(
         ctx,
         config
       )
