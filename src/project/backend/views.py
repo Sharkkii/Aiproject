@@ -144,23 +144,23 @@ def trainModel(request):
     n_test_eval = int(request.data["n_test_eval"])
 
     score = {
-        "covered": -1,
-        "missed": -1
+        "covered":[],
+        "missed": []
     }
 
     if (job_scheduler is not None):
-        job_scheduler.train(
+        train_score, test_score = job_scheduler.train(
             n_epoch = n_epoch,
-            n_train_eval = 1,
-            n_test_eval = 1,
-            env_step = 1
-        )
-        train_score, test_score = job_scheduler.controller.evaluate(
             n_train_eval = n_train_eval,
-            n_test_eval = n_test_eval
+            n_test_eval = n_test_eval,
+            env_step = 1,
+            dataset_size = 1000,
+            batch_size = 100,
+            return_score = True
         )
-        score["covered"] = np.mean(test_score["covered"])
-        score["missed"] = np.mean(test_score["missed"])
+
+        score["covered"] = [ np.mean(score) for score in test_score["covered"] ]
+        score["missed"] = [ np.mean(score) for score in test_score["missed"] ]
         
         if (model["status"] == ModelStatus.COMMITTED):
             model["status"] = ModelStatus.MODIFIED
