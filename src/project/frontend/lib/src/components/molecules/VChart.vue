@@ -1,15 +1,12 @@
 <template>
 <div id="v-chart">
-  <canvas id="chart"></canvas>
+  <canvas id="cover-miss-rate-chart"></canvas>
+  <!-- <canvas id="reward-chart"></canvas> -->
 </div>
 </template>
 
 <style scoped lang="scss">
 #v-chart {
-  canvas {
-    height: 400px;
-    width: 100%;
-  }
 }
 </style>
 
@@ -19,26 +16,23 @@ export default {
   name: "VChart",
   data: function() {
     return {
-      chart: null
+      coverMissRateChart: null,
+      coverRate: [],
+      missRate: []
     }
   },
   props: {
-    covered: {
+    coverRateProperty: {
       type: Array,
       default: function() {
         return []
       }
     },
-    missed: {
+    missRateProperty: {
       type: Array,
       default: function() {
         return []
       }
-    }
-  },
-  computed: {
-    watched: function() {
-      return this.covered, this.missed
     }
   },
   methods: {
@@ -51,15 +45,15 @@ export default {
       for (let i=0; i<n; i++) { labels[i] = i.toString() }
       return labels;
     },
-    renderChart: function() {
+    renderCoverMissRateChart: function() {
 
-      if (this.chart) {
-        this.chart.destroy()
+      if (this.coverMissRateChart) {
+        this.coverMissRateChart.destroy()
       }
 
       // data & labels
-      let coverRateData = this.getData(this.covered)
-      let missRateData = this.getData(this.missed)
+      let coverRateData = this.getData(this.coverRate)
+      let missRateData = this.getData(this.missRate)
       let datasets = [
         {
           label: "covered",
@@ -104,18 +98,26 @@ export default {
           }
         }
       }
-      const ctx = document.getElementById("chart")
 
       // chart
-      this.chart = new Chart(
-        ctx,
+      const coverMissRateContext = document.getElementById("cover-miss-rate-chart")
+      this.coverMissRateChart = new Chart(
+        coverMissRateContext,
         config
       )
 
     },
+    renderChart: function() {
+      this.renderCoverMissRateChart()
+    }
   },
   watch: {
-    watched: function() {
+    coverRateProperty: function() {
+      this.coverRate = this.coverRateProperty
+      this.renderChart()
+    },
+    missRateProperty: function() {
+      this.missRate = this.missRateProperty
       this.renderChart()
     }
   },
