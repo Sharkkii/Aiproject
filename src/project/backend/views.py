@@ -165,6 +165,10 @@ def trainModel(request):
     n_train_eval = int(request.data["n_train_eval"])
     n_test_eval = int(request.data["n_test_eval"])
 
+    PATH_TO_DATA = os.path.abspath(os.path.join(os.path.dirname(__file__), "src", "data"))
+    ts = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+    ext = ".csv"
+
     score = {
         "covered":[],
         "missed": []
@@ -176,13 +180,17 @@ def trainModel(request):
             n_train_eval = n_train_eval,
             n_test_eval = n_test_eval,
             env_step = 1,
-            dataset_size = 10000,
-            batch_size = 100,
+            dataset_size = 5000,
+            batch_size = 50,
             return_score = True
         )
 
         score["covered"] = [ np.mean(score) for score in test_score["covered"] ]
         score["missed"] = [ np.mean(score) for score in test_score["missed"] ]
+        
+        df = pd.DataFrame(score)
+        path = os.path.join(PATH_TO_DATA, ts) + ext
+        df.to_csv(path, index=False)
         
         if (agent_status == ModelStatus.COMMITTED):
             agent_status = ModelStatus.MODIFIED

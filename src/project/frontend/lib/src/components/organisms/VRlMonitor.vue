@@ -4,7 +4,7 @@
     <p>RL Monitor</p>
   </div>
   <div class="chart">
-    <v-chart v-bind:covered="modelScore.covered" v-bind:missed="modelScore.missed">
+    <v-chart v-bind:cover-rate-property="modelScore.covered" v-bind:miss-rate-property="modelScore.missed">
     </v-chart>
   </div>
   <div class="table">

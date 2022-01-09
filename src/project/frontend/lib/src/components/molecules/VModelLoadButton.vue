@@ -4,7 +4,7 @@
     <div class="items">
       <div class="item">
         <label>
-          <p>Model Name</p>
+          <p>agent_name</p>
           <div><input type="text" v-model="name"></div>
         </label>
       </div>
