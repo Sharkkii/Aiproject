@@ -2,15 +2,57 @@
 <div id="v-chart">
   <canvas id="cover-miss-rate-chart"></canvas>
   <!-- <canvas id="reward-chart"></canvas> -->
+  <form method="GET" v-on:submit.prevent="submit">
+    <div class="items">
+      <div class="item">
+        <label>
+          <p>Experiment</p>
+          <div><input type="text" v-model="experimentName"></div>
+        </label>
+      </div>
+      <div class="item">
+        <button type="submit">
+          <p>Load</p>
+        </button>
+      </div>
+    </div>
+  </form>
 </div>
 </template>
 
 <style scoped lang="scss">
 #v-chart {
+
+  .items {
+    display: flex;
+    align-items: flex-end;
+    height: 100px;
+  }
+
+  .item {
+
+    width: 50%;
+
+    input {
+      box-sizing: border-box;
+      font-size: 20px;
+      height: 50px;
+      width: 100%;
+    }
+
+    button {
+      box-sizing: border-box;
+      font-size: 20px;
+      height: 50px;
+      width: 100%;
+    }
+  }
+
 }
 </style>
 
 <script>
+const axios = require("axios")
 import Chart from "chart.js"
 export default {
   name: "VChart",
@@ -18,7 +60,8 @@ export default {
     return {
       coverMissRateChart: null,
       coverRate: [],
-      missRate: []
+      missRate: [],
+      experimentName: ""
     }
   },
   props: {
@@ -36,6 +79,27 @@ export default {
     }
   },
   methods: {
+    submit: function() {
+      this.getExperimentalResult({
+        name: this.experimentName
+      })
+    },
+    getExperimentalResult: function(data) {
+      let self = this
+      axios.defaults.xsrfCookieName = "csrftoken"
+      axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
+      axios
+      .get("get-experimental-result", {
+        params: {
+          name: data.name
+        }
+      })
+      .then(function(response) {
+        self.coverRate = response.data["covered"]
+        self.missRate = response.data["missed"]
+        self.renderChart()
+      })
+    },
     getData: function(data) {
       return data
     },
@@ -85,16 +149,16 @@ export default {
         data: data,
         options: {
           scales: {
-            xAxes: [{
+            x: {
               ticks: {
                 display: false
               }
-            }],
-            yAxes: [{
+            },
+            y: {
               ticks: {
                 min: 0, max: 1
               }
-            }]
+            }
           }
         }
       }

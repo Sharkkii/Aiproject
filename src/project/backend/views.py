@@ -344,3 +344,24 @@ def getBestSchedule(request):
 
     response = JsonResponse(data)
     return response
+
+@api_view(["GET"])
+def getExperimentalResult(request):
+
+    name = request.query_params.get("name")
+    print(name)
+    
+    PATH_TO_DATA = os.path.abspath(os.path.join(os.path.dirname(__file__), "src", "data"))
+    ext = ".csv"
+    path = os.path.join(PATH_TO_DATA, name) + ext
+    if (os.path.exists(path)):
+        df = pd.read_csv(path)
+        data = df.to_dict()
+    else:
+        data = {
+            "covered": [],
+            "missed": []
+        }
+
+    response = JsonResponse(data)
+    return response

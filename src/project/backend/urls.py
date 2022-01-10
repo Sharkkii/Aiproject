@@ -12,5 +12,6 @@ urlpatterns = [
     path("train-model", views.trainModel),
     path("load-model", views.loadModel),
     path("save-model", views.saveModel),
-    path("get-best-schedule", views.getBestSchedule)
+    path("get-best-schedule", views.getBestSchedule),
+    path("get-experimental-result", views.getExperimentalResult)
 ]
