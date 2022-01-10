@@ -12,7 +12,9 @@
         </v-task-panel>
       </div>
       <div class="v-schedule-panel">
-        <v-schedule-panel v-on:get-best-schedule="getBestSchedule">
+        <v-schedule-panel
+          v-on:get-best-schedule="getBestSchedule"
+        >
         </v-schedule-panel>
       </div>
       <div class="v-rl-panel">
@@ -31,7 +33,12 @@
         <v-task-monitor v-bind:task-list="taskList" v-on:delete-task="deleteTask"></v-task-monitor>
       </div>
       <div class="v-schedule-monitor">
-        <v-schedule-monitor v-bind:schedule-list="scheduleList"></v-schedule-monitor>
+        <v-schedule-monitor
+          v-bind:schedule-list-property="scheduleList"
+          v-bind:n-slot="modelConfiguration.nSlot"
+          v-bind:n-worker="modelConfiguration.nWorker"
+        >
+        </v-schedule-monitor>
       </div>
       <div class="v-rl-monitor">
         <v-rl-monitor v-bind:model-information="modelInformation" v-bind:model-configuration="modelConfiguration" v-bind:model-score="modelScore">
@@ -96,7 +103,7 @@ export default {
     return {
       taskList: [],
       referenceTaskList: [],
-      scheduleList: {},
+      scheduleList: [],
       modelInformation: {},
       modelConfiguration: {},
       modelScore: {},
@@ -170,7 +177,27 @@ export default {
       axios
       .post("get-best-schedule", data)
       .then(function(response) {
-        self.scheduleList = response.data
+        
+        let _nSlot = self.modelConfiguration.nSlot
+        let _nWorker = self.modelConfiguration.nWorker
+        let decode = function(x, base, order) {
+          let _x = x
+          let y = new Set()
+          for (let i=0; i<order; i++) {
+            y.add(_x % base)
+            _x = Math.floor(_x / base)
+          }
+          return Array.from(y)
+        }
+
+        let _scheduleList = Object.values(response.data)
+        _scheduleList = _scheduleList.map(function(_schedule) {
+          return Object.values(_schedule).map(function(_action) {
+            return decode(_action, _nSlot, _nWorker)
+          })
+        })
+        self.scheduleList = _scheduleList
+
       })
     },
     initializeModel: function(data) {
@@ -266,8 +293,7 @@ export default {
         })
         self.modelInformation = newData
 
-        status = response.data["status"]
-        console.log("save-model", status)
+        console.log("save-model", response.data["status"])
       })
     },
     loadModel: function(data) {
@@ -282,13 +308,21 @@ export default {
       .post("load-model", data)
       .then(function(response) {
 
-        let oldData = Object.assign({}, self.modelInformation)
-        let newData = Object.assign(oldData, {
+        let oldModelInformation = Object.assign({}, self.modelInformation)
+        let oldModelConfiguration = Object.assign({}, self.modelConfiguration)
+
+        let newModelInformation = Object.assign(oldModelInformation, {
           envName: response.data["env_name"],
           agentName: response.data["agent_name"],
           agentStatus: response.data["agent_status"]
         })
-        self.modelInformation = newData
+        let newModelConfiguration = Object.assign(oldModelConfiguration, {
+          nSlot: response.data["n_slot"],
+          nWorker: response.data["n_worker"]
+        })
+
+        self.modelInformation = newModelInformation
+        self.modelConfiguration = newModelConfiguration
 
         self.status = {
           train: "OK",

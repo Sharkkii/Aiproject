@@ -43,10 +43,29 @@
 <script>
 export default {
   name: "VScheduleMonitor",
+  data: function() {
+    return {
+      scheduleList: []
+    }
+  },
   props: {
-    scheduleList:{
-      type: Object,
-      default: {}
+    nSlot: {
+      type: Number,
+      default: null
+    },
+    nWorker: {
+      type: Number,
+      default: null
+    },
+    scheduleListProperty: {
+      type: Array,
+      default: []
+    }
+  },
+  watch: {
+    scheduleListProperty: function() {
+      console.log(this.scheduleListProperty)
+      this.scheduleList = this.scheduleListProperty
     }
   }
 }
