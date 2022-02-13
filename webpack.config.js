@@ -6,19 +6,21 @@ const BundleTracker = require("webpack-bundle-tracker")
 module.exports = {
   mode: "development",
   entry: {
-    main: "./src/index.js"
+    main: "./src/project/frontend/lib/src/index.js"
   },
   output: {
     // NOTE: for client-side
     // path: path.resolve(__dirname, "./public/"),
     // filename: "bundle.js"
     // NOTE: for server-side
-    path: path.resolve(__dirname, "./public/webpack_bundles/"),
+    path: path.resolve(__dirname, "./src/project/frontend/lib/public/webpack_bundles/"),
     filename: "[name]-[hash].js",
   },
   devServer: {
-    contentBase: path.join(__dirname, "./public"),
-    watchContentBase: true
+    static: {
+      directory: path.join(__dirname, "./src/project/frontend/lib/public"),
+      watch: true,
+    },
   },
   resolve: {
     extensions: [".js", ".vue"],
@@ -42,7 +44,7 @@ module.exports = {
             loader: "sass-resources-loader",
             options: {
               resources: [
-                "./src/assets/css/main.scss"
+                "./src/project/frontend/lib/src/assets/css/main.scss"
               ]
             }
           }
@@ -69,7 +71,7 @@ module.exports = {
     new VueLoaderPlugin(),
     new BundleTracker({
       path: __dirname,
-      filename: "webpack-stats.json"
+      filename: "./src/project/frontend/lib/webpack-stats.json"
     })
   ]
 }
